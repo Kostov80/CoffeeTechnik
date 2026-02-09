@@ -30,7 +30,7 @@ namespace CoffeeTechnik.Controllers
             return View(model);
         }
 
-        [HttpPost]
+        [HttpGet]
         public IActionResult GuestLogin()
         {
             
