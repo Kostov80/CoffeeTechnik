@@ -1,8 +1,66 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Начало";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-4">
+
+    <h2 class="text-center mb-5">Начало</h2>
+
+    <div class="row g-4 text-center">
+
+        <div class="col-6 col-md-4">
+            <a asp-controller="ServiceRequest" asp-action="Create" class="text-decoration-none">
+                <div class="card p-4 shadow-sm h-100">
+                    <div class="display-4">➕</div>
+                    <h5 class="mt-3 text-dark">Нова заявка</h5>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-6 col-md-4">
+            <a asp-controller="Objects" asp-action="Index" class="text-decoration-none">
+                <div class="card p-4 shadow-sm h-100">
+                    <div class="display-4">🏢</div>
+                    <h5 class="mt-3 text-dark">Обекти</h5>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-6 col-md-4">
+            <a asp-controller="Machines" asp-action="Index" class="text-decoration-none">
+                <div class="card p-4 shadow-sm h-100">
+                    <div class="display-4">☕</div>
+                    <h5 class="mt-3 text-dark">Машини</h5>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-6 col-md-4">
+            <a asp-controller="ServiceActivity" asp-action="Index" class="text-decoration-none">
+                <div class="card p-4 shadow-sm h-100">
+                    <div class="display-4">🛠</div>
+                    <h5 class="mt-3 text-dark">Сервизна дейност</h5>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-6 col-md-4">
+            <a asp-controller="Warehouse" asp-action="Index" class="text-decoration-none">
+                <div class="card p-4 shadow-sm h-100">
+                    <div class="display-4">📦</div>
+                    <h5 class="mt-3 text-dark">Склад</h5>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-6 col-md-4">
+            <a asp-controller="Reports" asp-action="Index" class="text-decoration-none">
+                <div class="card p-4 shadow-sm h-100">
+                    <div class="display-4">📊</div>
+                    <h5 class="mt-3 text-dark">Справки</h5>
+                </div>
+            </a>
+        </div>
+
+    </div>
 </div>
