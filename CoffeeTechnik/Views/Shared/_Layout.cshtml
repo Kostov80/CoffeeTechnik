@@ -1,5 +1,11 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@{
+    
+    string role = TempData["UserRole"] as string ?? "Guest";
+    TempData.Keep("UserRole"); // За да се запази след пренасочване
+}
+
+<!DOCTYPE html>
+<html lang="bg">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,7 +17,95 @@
 </head>
 <body>
 
-    
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    CoffeeTechnik
+                </a>
+
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto">
+
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Начало</a>
+                        </li>
+
+                        <
+                        @if (role == "Sales")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="ServiceRequest" asp-action="Create">Нова заявка</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Objects" asp-action="Index">Обекти</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Machines" asp-action="Index">Машини</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Reports" asp-action="Index">Справки</a>
+                            </li>
+                        }
+
+                        
+                        @if (role == "Technician")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Objects" asp-action="Index">Обекти</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Machines" asp-action="Index">Машини</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Service" asp-action="Index">Сервизна дейност</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Warehouse" asp-action="Index">Склад</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Reports" asp-action="Index">Справки</a>
+                            </li>
+                        }
+
+                        
+                        @if (role == "Guest")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Objects" asp-action="Index">Обекти</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Reports" asp-action="Index">Справки</a>
+                            </li>
+                        }
+
+                    </ul>
+
+                    <span class="navbar-text me-3">
+                        Роля: @role
+                    </span>
+
+                    @if (role == "Guest")
+                    {
+                        <a class="btn btn-outline-secondary"
+                           asp-controller="Account"
+                           asp-action="Login">
+                            Вход
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-outline-danger"
+                           asp-controller="Account"
+                           asp-action="Logout">
+                            Изход
+                        </a>
+                    }
+                </div>
+            </div>
+        </nav>
+    </header>
 
     <div class="container">
         <main role="main" class="pb-3">
@@ -19,7 +113,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted mt-4">
         <div class="container">
             &copy; 2026 - CoffeeTechnik
         </div>
@@ -28,7 +122,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>

@@ -2,17 +2,25 @@
 
 namespace CoffeeTechnik.Models
 {
-    public class LoginViewModel// Модел за вход
+    public class LoginViewModel // Модел за вход
     {
-        [Required]
-        [Display(Name = "Потребителско име")]//Показва името на полето в изгледа
-        public string Username { get; set; }//Име на техника
+        [Required(ErrorMessage = "Въведи потребителско име")]
+        [Display(Name = "Потребителско име")]
+        public string Username 
+        { get; set; } // Потребителско име
 
-        [Required]
-        [DataType(DataType.Password)]//Парола
+        [Required(ErrorMessage = "Въведи парола")]
+        [DataType(DataType.Password)]
         [Display(Name = "Парола")]
-        public string Password { get; set; }
+        public string Password
+        { get; set; }
 
-        public bool RememberMe { get; set; }//Запомня сесията
+        [Required(ErrorMessage = "Избери роля")]
+        [Display(Name = "Роля")]
+        public string Role 
+        { get; set; } // Technician / Sales
+
+        public bool RememberMe
+        { get; set; } // Запомня сесията
     }
 }
