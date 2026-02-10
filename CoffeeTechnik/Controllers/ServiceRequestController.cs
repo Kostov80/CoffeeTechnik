@@ -12,6 +12,9 @@ namespace CoffeeTechnik.Controllers
             return View();//начална страница 
         }
 
+
+
+
         
         [HttpGet]
         public IActionResult CreateMontage()// станица за монтаж
@@ -20,8 +23,7 @@ namespace CoffeeTechnik.Controllers
 
             return View(new MontageViewModel()); 
         }
-
-        
+                
         [HttpPost]
         public IActionResult CreateMontage(MontageViewModel model) //обработка на данните 
         {
@@ -41,6 +43,12 @@ namespace CoffeeTechnik.Controllers
         }
 
         
+
+
+
+
+
+
         [HttpGet]
         public IActionResult CreateDemontage()
         {
@@ -48,6 +56,24 @@ namespace CoffeeTechnik.Controllers
 
             return View();
         }
+
+        [HttpPost]
+        public IActionResult CreateDemontage(string objectName, string requester, string reason, string technician, string note)
+        {
+            
+            return RedirectToAction("Index", "Home");
+        }
+
+
+
+
+
+
+
+
+
+
+
 
         [HttpGet]
         public IActionResult CreateEmergency()
