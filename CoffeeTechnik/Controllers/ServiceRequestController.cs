@@ -45,10 +45,6 @@ namespace CoffeeTechnik.Controllers
         
 
 
-
-
-
-
         [HttpGet]
         public IActionResult CreateDemontage()
         {
@@ -68,13 +64,6 @@ namespace CoffeeTechnik.Controllers
 
 
 
-
-
-
-
-
-
-
         [HttpGet]
         public IActionResult CreateEmergency()
         {
@@ -83,6 +72,14 @@ namespace CoffeeTechnik.Controllers
             return View();
         }
 
+        [HttpPost]
+        public IActionResult CreateEmergency(string objectName, string emergencyDetails)
+        {
+            
+            return RedirectToAction("Index", "Home");
+        }
+
+
         [HttpGet]
         public IActionResult CreateMaintenance()
         {
@@ -90,5 +87,14 @@ namespace CoffeeTechnik.Controllers
 
             return View();
         }
+
+        [HttpPost]
+        public IActionResult CreateMaintenance(string objectName, string requestFrom)
+        {
+            
+
+            return RedirectToAction("Index", "Home");
+        }
+
     }
 }

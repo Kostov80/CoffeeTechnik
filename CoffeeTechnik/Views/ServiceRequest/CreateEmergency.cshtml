@@ -4,13 +4,76 @@
 
 <div class="container mt-4">
 
-    <div class="mb-4">
-        <h4 class="text-center">@ViewData["Title"]</h4>
+    <div class="mb-3 text-center">
+        <h5 class="fw-semibold">@ViewData["Title"]</h5>
+        <hr />
     </div>
 
+    <form asp-action="CreateEmergency" asp-controller="ServiceRequest" method="post">
+                
+        <div class="mb-3">
+            <label class="form-label">Обект</label>
+            <div class="d-flex gap-2">
+                <input class="form-control" name="objectName" required />
 
-    <div class="d-flex justify-content-start mt-5">
-        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">← Назад</a>
-    </div>
+                <button type="button"
+                        class="btn btn-outline-info"
+                        data-bs-toggle="modal"
+                        data-bs-target="#infoModal">
+                    Информация
+                </button>
+            </div>
+        </div>
+                
+        <div class="mb-3">
+            <label class="form-label">Описание на аварията</label>
+            <textarea class="form-control" name="emergencyDetails" rows="4" required></textarea>
+        </div>
+                
+        <div class="d-flex justify-content-between mt-4">
+            <a asp-controller="ServiceRequest"
+               asp-action="Create"
+               class="btn btn-outline-secondary">
+                ← Назад
+            </a>
 
+            <button type="submit" class="btn btn-danger">
+                Запази
+            </button>
+        </div>
+                
+        <div class="modal fade" id="infoModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Информация за обекта</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p><strong>Име на обекта:</strong> (данни от монтаж)</p>
+                        <p><strong>Булстат:</strong> *********</p>
+                        <p><strong>Град:</strong> *********</p>
+                        <p><strong>Адрес:</strong> *********</p>
+                        <p><strong>Модел машина:</strong> *********</p>
+
+                        <div class="alert alert-info mt-3">
+                            Данните ще се зареждат автоматично от заявката за монтаж.
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            Затвори
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </form>
 </div>
