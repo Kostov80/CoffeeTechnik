@@ -1,0 +1,107 @@
+﻿@model IEnumerable<CoffeeTechnik.Models.ObjectEntity>
+
+@{
+    ViewData["Title"] = "Обекти";
+}
+
+<h2>Обекти</h2>
+
+<div class="mb-3">
+    <a class="btn btn-secondary" href="@Url.Action("Index", "Home")">Назад</a>
+    <a class="btn btn-primary" href="@Url.Action("Create")">Нов обект</a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<table class="table table-striped table-hover" id="objectsTable">
+    <thead>
+        <tr>
+            <th>Име</th>
+            <th>Фирма</th>
+            <th>Булстат</th>
+            <th>Тип</th>
+            <th>Адрес</th>
+            <th>Телефон</th>
+            <th>Контактно лице</th>
+            <th>Машини</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var obj in Model)
+        {
+            <tr data-id="@obj.Id" class="@(obj.Machines.Any() ? "" : "no-machines")">
+                <td>@obj.Name</td>
+                <td>@obj.Firma</td>
+                <td>@obj.Bulstat</td>
+                <td>@obj.Type</td>
+                <td>@obj.Address</td>
+                <td>@obj.PhoneNumber</td>
+                <td>@obj.ContactPerson</td>
+
+                <td>
+                    @if (obj.Machines != null && obj.Machines.Any())
+                    {
+                        <span class="badge bg-success">Има</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Няма</span>
+                    }
+                </td>
+
+                <td>
+                    @if (obj.Machines != null && obj.Machines.Any())
+                    {
+                        <a class="btn btn-sm btn-warning"
+                           href="@Url.Action("Edit", new { id = obj.Id, returnUrl = Url.Action("Index") })">
+                            Редактирай
+                        </a>
+                    }
+                    else
+                    {
+                        <form method="post"
+                              asp-action="Delete"
+                              asp-route-id="@obj.Id"
+                              style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit"
+                                    class="btn btn-sm btn-danger"
+                                    onclick="return confirm('Сигурни ли сте, че искате да изтриете този обект?');">
+                                Изтрий
+                            </button>
+                        </form>
+                    }
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        
+        document.querySelectorAll('#objectsTable tbody tr').forEach(row => {
+            row.addEventListener('click', function () {
+                
+                document.querySelectorAll('#objectsTable tbody tr').forEach(r => r.classList.remove('table-active'));
+                this.classList.add('table-active');
+            });
+        });
+    </script>
+}
+
+<style>
+    .no-machines {
+        font-style: italic;
+    }
+</style>

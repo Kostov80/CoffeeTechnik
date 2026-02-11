@@ -1,0 +1,55 @@
+﻿@model List<CoffeeTechnik.Models.ObjectEntity>
+
+@{
+    ViewData["Title"] = "Демонтаж на обекти";
+}
+
+<h2>Демонтаж на обекти</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Име</th>
+            <th>Фирма</th>
+            <th>Булстат</th>
+            <th>Адрес</th>
+            <th>Телефон</th>
+            <th>Контактно лице</th>
+            <th>Действие</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var obj in Model)
+        {
+            <tr>
+                <td>@obj.Name</td>
+                <td>@obj.Firma</td>
+                <td>@obj.Bulstat</td>
+                <td>@obj.Address</td>
+                <td>@obj.PhoneNumber</td>
+                <td>@obj.ContactPerson</td>
+                <td>
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" name="id" value="@obj.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">Изтрий</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="d-flex justify-content-between mt-3">
+    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Назад</a>
+    <a asp-controller="Objects" asp-action="Create" class="btn btn-primary">Нов обект</a>
+</div>
