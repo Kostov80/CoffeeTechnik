@@ -5,96 +5,115 @@ namespace CoffeeTechnik.Controllers
 {
     public class ServiceRequestController : Controller
     {
+        
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create() // страница за избор на заявка
         {
-            
-            return View();//начална страница 
+            ViewData["PageTitle"] = "Нова заявка";
+
+            return View();
         }
-
-
-
 
         
         [HttpGet]
-        public IActionResult CreateMontage()// станица за монтаж
+        public IActionResult CreateMontage()// монтаж
         {
-            ViewData["PageTitle"] = "Страница за Монтаж";
+            ViewData["PageTitle"] = "Заявка за Монтаж";
 
-            return View(new MontageViewModel()); 
+            return View(new MontageViewModel());
         }
-                
+
         [HttpPost]
-        public IActionResult CreateMontage(MontageViewModel model) //обработка на данните 
+        [ValidateAntiForgeryToken]
+        public IActionResult CreateMontage(MontageViewModel model)
         {
-            ViewData["PageTitle"] = "Страница за Монтаж";
+            ViewData["PageTitle"] = "Заявка за Монтаж";
 
             if (!ModelState.IsValid)
             {
-                
-                return View(model);//грешка при празно поле
+
+                return View(model);
             }
 
             
-            TempData["SuccessMessage"] = "Заявката е запаметена успешно!";
+            TempData["SuccessMessage"] = "Заявката за монтаж е запаметена успешно!";
 
-            
-            return RedirectToAction("Create");// след запазване начална страница
+            return RedirectToAction("Create");
         }
 
         
-
-
         [HttpGet]
-        public IActionResult CreateDemontage()
+        public IActionResult CreateDemontage()// демонтаж
         {
-            ViewData["RequestType"] = "Демонтаж";
+            ViewData["PageTitle"] = "Заявка за Демонтаж";
 
             return View();
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult CreateDemontage(string objectName, string requester, string reason, string technician, string note)
         {
-            
-            return RedirectToAction("Index", "Home");
+            if (string.IsNullOrEmpty(objectName) || string.IsNullOrEmpty(requester))
+            {
+                TempData["ErrorMessage"] = "Моля, попълнете задължителните полета!";
+
+                return RedirectToAction("CreateDemontage");
+            }
+
+            TempData["SuccessMessage"] = "Заявката за демонтаж е запаметена успешно!";
+
+            return RedirectToAction("Create");
         }
 
-
-
-
-
+        
         [HttpGet]
-        public IActionResult CreateEmergency()
+        public IActionResult CreateEmergency()// авария
         {
-            ViewData["RequestType"] = "Авария";
+            ViewData["PageTitle"] = "Заявка за Авария";
 
             return View();
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult CreateEmergency(string objectName, string emergencyDetails)
         {
-            
-            return RedirectToAction("Index", "Home");
+            if (string.IsNullOrEmpty(objectName) || string.IsNullOrEmpty(emergencyDetails))
+            {
+                TempData["ErrorMessage"] = "Моля, попълнете задължителните полета!";
+
+                return RedirectToAction("CreateEmergency");
+            }
+
+            TempData["SuccessMessage"] = "Заявката за авария е запаметена успешно!";
+
+            return RedirectToAction("Create");
         }
 
-
+        
         [HttpGet]
         public IActionResult CreateMaintenance()
         {
-            ViewData["RequestType"] = "Профилактика";
+            ViewData["PageTitle"] = "Заявка за Профилактика";
 
             return View();
         }
 
         [HttpPost]
-        public IActionResult CreateMaintenance(string objectName, string requestFrom)
+        [ValidateAntiForgeryToken]
+        public IActionResult CreateMaintenance(string objectName, string requestFrom)// профилактика
         {
-            
+            if (string.IsNullOrEmpty(objectName) || string.IsNullOrEmpty(requestFrom))
+            {
+                TempData["ErrorMessage"] = "Моля, попълнете задължителните полета!";
 
-            return RedirectToAction("Index", "Home");
+                return RedirectToAction("CreateMaintenance");
+            }
+
+            TempData["SuccessMessage"] = "Заявката за профилактика е запаметена успешно!";
+
+            return RedirectToAction("Create");
         }
-
     }
 }

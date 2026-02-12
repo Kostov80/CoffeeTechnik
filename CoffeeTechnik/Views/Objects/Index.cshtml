@@ -89,10 +89,10 @@
 
 @section Scripts {
     <script>
-        
+
         document.querySelectorAll('#objectsTable tbody tr').forEach(row => {
             row.addEventListener('click', function () {
-                
+
                 document.querySelectorAll('#objectsTable tbody tr').forEach(r => r.classList.remove('table-active'));
                 this.classList.add('table-active');
             });
