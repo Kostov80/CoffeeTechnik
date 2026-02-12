@@ -1,0 +1,99 @@
+﻿@model IEnumerable<CoffeeTechnik.Models.ServiceRequest>
+
+@{
+    ViewData["Title"] = "Всички заявки";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Всички заявки</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    
+    <div class="d-flex justify-content-center mb-3">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="filterMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                Филтрирай по тип
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="filterMenuButton">
+                <li><a class="dropdown-item" asp-action="Index" asp-route-requestType="">Всички</a></li>
+                <li><a class="dropdown-item" asp-action="Index" asp-route-requestType="Монтаж">Монтаж</a></li>
+                <li><a class="dropdown-item" asp-action="Index" asp-route-requestType="Демонтаж">Демонтаж</a></li>
+                <li><a class="dropdown-item" asp-action="Index" asp-route-requestType="Авария">Авария</a></li>
+                <li><a class="dropdown-item" asp-action="Index" asp-route-requestType="Профилактика">Профилактика</a></li>
+            </ul>
+        </div>
+    </div>
+
+    
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Обект</th>
+                <th>Град</th>
+                <th>Модел машина</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Machine?.ObjectEntity?.Name ?? "–"</td>
+                    <td>@item.Machine?.ObjectEntity?.City ?? "–"</td>
+                    <td>@item.Machine?.Model ?? "–"</td>
+                    <td>
+                        <form asp-action="Delete" method="post" onsubmit="return confirm('Сигурни ли сте, че искате да изтриете заявката?');">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">Изтрий</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+       
+</div>
+
+
+<a asp-controller="Home"
+   asp-action="Index"
+   class="btn shadow"
+   style="
+       position: fixed;
+       bottom: 20px;
+       left: 20px;
+       z-index: 2000;
+       background-color: #6c757d; /* постоянен сив цвят */
+       color: white; /* текстът да е бял */
+       border: none;
+       width: 120px;
+   ">
+    ← Назад
+</a>
+
+
+<a asp-controller="ServiceRequest"
+   asp-action="Create"
+   class="btn shadow"
+   style="
+       position: fixed;
+       bottom: 20px;
+       right: 20px;
+       z-index: 2000;
+       background-color: #0d6efd;
+       color: white;
+       border: none;
+       width: 150px;
+   ">
+    Нова заявка
+</a>
+
+

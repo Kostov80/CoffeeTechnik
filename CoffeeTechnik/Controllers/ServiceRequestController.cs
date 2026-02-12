@@ -1,13 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using CoffeeTechnik.Data;
 using CoffeeTechnik.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CoffeeTechnik.Controllers
 {
     public class ServiceRequestController : Controller
     {
+        private readonly ApplicationDbContext _context;
+
+        public ServiceRequestController(ApplicationDbContext context)
+        {
+
+            _context = context;
+        }
+
         
         [HttpGet]
-        public IActionResult Create() // страница за избор на заявка
+        public IActionResult Create()//нова заявка
         {
             ViewData["PageTitle"] = "Нова заявка";
 
@@ -16,7 +26,49 @@ namespace CoffeeTechnik.Controllers
 
         
         [HttpGet]
-        public IActionResult CreateMontage()// монтаж
+        public IActionResult Index(string requestType)//списък със заявки
+        {
+            var requests = _context.ServiceRequests.Include(r => r.Machine)
+                           .OrderByDescending(r => r.Id).AsQueryable();
+
+           
+            
+            if (!string.IsNullOrEmpty(requestType))
+            {
+
+                requests = requests.Where(r => r.RequestType == requestType);
+            }
+
+            return View(requests.ToList());
+        }
+
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)//изтриване на заявка
+        {
+
+            var request = _context.ServiceRequests.Find(id);
+          
+            if (request == null)
+            {
+                TempData["ErrorMessage"] = "Заявката не беше намерена!";
+
+                return RedirectToAction("Index");
+            }
+
+            _context.ServiceRequests.Remove(request);
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Заявката беше изтрита успешно!";
+
+            return RedirectToAction("Index");
+        }
+
+        #region Заявки по тип
+
+        [HttpGet]
+        public IActionResult CreateMontage()//монтаж
         {
             ViewData["PageTitle"] = "Заявка за Монтаж";
 
@@ -25,7 +77,7 @@ namespace CoffeeTechnik.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateMontage(MontageViewModel model)
+        public IActionResult CreateMontage(MontageViewModel model)//монтаж
         {
             ViewData["PageTitle"] = "Заявка за Монтаж";
 
@@ -41,9 +93,8 @@ namespace CoffeeTechnik.Controllers
             return RedirectToAction("Create");
         }
 
-        
         [HttpGet]
-        public IActionResult CreateDemontage()// демонтаж
+        public IActionResult CreateDemontage()
         {
             ViewData["PageTitle"] = "Заявка за Демонтаж";
 
@@ -66,9 +117,8 @@ namespace CoffeeTechnik.Controllers
             return RedirectToAction("Create");
         }
 
-        
         [HttpGet]
-        public IActionResult CreateEmergency()// авария
+        public IActionResult CreateEmergency()
         {
             ViewData["PageTitle"] = "Заявка за Авария";
 
@@ -91,7 +141,6 @@ namespace CoffeeTechnik.Controllers
             return RedirectToAction("Create");
         }
 
-        
         [HttpGet]
         public IActionResult CreateMaintenance()
         {
@@ -102,7 +151,7 @@ namespace CoffeeTechnik.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateMaintenance(string objectName, string requestFrom)// профилактика
+        public IActionResult CreateMaintenance(string objectName, string requestFrom)
         {
             if (string.IsNullOrEmpty(objectName) || string.IsNullOrEmpty(requestFrom))
             {
@@ -115,5 +164,7 @@ namespace CoffeeTechnik.Controllers
 
             return RedirectToAction("Create");
         }
+
+        #endregion
     }
 }

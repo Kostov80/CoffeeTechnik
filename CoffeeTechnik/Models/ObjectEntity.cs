@@ -13,6 +13,10 @@ namespace CoffeeTechnik.Models
         public string Name
         { get; set; } = null!;
 
+        [Display(Name = "Град")]
+        public string? City 
+        { get; set; } = null!;
+
         [Required]
         [Display(Name = "Фирма")]
         public string Firma
