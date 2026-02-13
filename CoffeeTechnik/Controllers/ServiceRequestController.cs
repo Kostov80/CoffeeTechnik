@@ -107,14 +107,10 @@ namespace CoffeeTechnik.Controllers
         #region Create POST Actions
 
 
-
-
-
-       
-
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateMontage(MontageViewModel model)
+        public IActionResult CreateMontage(MontageViewModel model)//   заявка за монтаж
         {
             if (!ModelState.IsValid)
             {
@@ -122,7 +118,7 @@ namespace CoffeeTechnik.Controllers
                 return View(model);
             }
 
-            // 1. Взимаме или създаваме обект
+            
             var obj = _context.Objects.FirstOrDefault(o => o.Name == model.ObjectName);// обект с това име вече съществува ли
            
             if (obj == null)
@@ -179,7 +175,9 @@ namespace CoffeeTechnik.Controllers
 
                 Description = $"Монтаж на машина {machine.Model} на обект {obj.Name}",
 
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
+
+                Requester = model.Requester
             };
 
             _context.ServiceRequests.Add(request);
@@ -193,37 +191,79 @@ namespace CoffeeTechnik.Controllers
             return RedirectToAction(nameof(CreateMontage));
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CreateDemontage(string objectName, string requester, string reason, string technician, string note)
         {
-            if (string.IsNullOrEmpty(objectName) || string.IsNullOrEmpty(requester))
+            
+            if (string.IsNullOrEmpty(objectName) || string.IsNullOrEmpty(requester))//задължителните полета
             {
                 TempData["ErrorMessage"] = "Моля, попълнете задължителните полета!";
 
                 return RedirectToAction("CreateDemontage");
             }
 
+            
            
-            var obj = _context.Objects.FirstOrDefault(o => o.Name == objectName);
+            var obj = _context.Objects.FirstOrDefault(o => o.Name == objectName);// Вземаме или създаваме обекта
             
             if (obj == null)
             {
-                obj = new ObjectEntity { Name = objectName, Type = "Демонтаж" };
+                obj = new ObjectEntity
+                {
+                    Name = objectName,
+
+                    Type = "Демонтаж",
+
+                    Bulstat = "N/A",  
+                    
+                    City = "N/A",
+
+                    Address = "N/A",
+
+                    ContactPerson = "N/A",
+
+                    PhoneNumber = "N/A",
+
+                    Firma = "Неизвестна"         
+                };
 
                 _context.Objects.Add(obj);
 
-                _context.SaveChanges();
+                _context.SaveChanges(); 
             }
 
-            var request = new ServiceRequest
+            
+            var machine = _context.Machines.FirstOrDefault(m => m.ObjectEntityId == obj.Id);
+            
+            if (machine == null)
+            {
+                machine = new Machine
+                {
+                    Model = "Неизвестен модел",      
+                   
+                    ObjectEntityId = obj.Id,
+                   
+                    SerialNumber = note ?? "N/A"
+                };
+
+                _context.Machines.Add(machine);
+
+                _context.SaveChanges(); 
+            }
+
+            
+            var request = new ServiceRequest// заявката за демонтаж
             {
                 RequestType = "Демонтаж",
 
+                MachineId = machine.Id,   
+                
                 Description = $"Демонтаж на обект {obj.Name}. Причина: {reason}",
 
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
+
+                Requester = requester                  
             };
 
             _context.ServiceRequests.Add(request);
@@ -231,39 +271,83 @@ namespace CoffeeTechnik.Controllers
             _context.SaveChanges();
 
             TempData["SuccessMessage"] = "Заявката за демонтаж е запаметена успешно!";
-            return RedirectToAction("CreateDemontage"); 
+
+            return RedirectToAction("CreateDemontage");
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateEmergency(string objectName, string emergencyDetails)
+        public IActionResult CreateEmergency(string objectName, string emergencyDetails)// заявка за авария
         {
-            if (string.IsNullOrEmpty(objectName) || string.IsNullOrEmpty(emergencyDetails))
+            
+            if (string.IsNullOrEmpty(objectName) || string.IsNullOrEmpty(emergencyDetails))// задължителните полета
             {
                 TempData["ErrorMessage"] = "Моля, попълнете задължителните полета!";
 
                 return RedirectToAction("CreateEmergency");
             }
 
-           
-            var obj = _context.Objects.FirstOrDefault(o => o.Name == objectName);
             
+            var obj = _context.Objects.FirstOrDefault(o => o.Name == objectName);// Вземаме или създаваме обекта
+           
             if (obj == null)
             {
-                obj = new ObjectEntity { Name = objectName, Type = "Авария" };
+                obj = new ObjectEntity
+                {
+                    Name = objectName,
+
+                    Type = "Авария",
+
+                    Bulstat = "N/A", 
+                    
+                    City = "N/A",
+
+                    Address = "N/A",
+
+                    ContactPerson = "N/A",
+
+                    PhoneNumber = "N/A",
+
+                    Firma = "Неизвестна"      
+                };
 
                 _context.Objects.Add(obj);
 
-                _context.SaveChanges();
+                _context.SaveChanges(); 
             }
 
-            var request = new ServiceRequest
+            
+            var machine = _context.Machines.FirstOrDefault(m => m.ObjectEntityId == obj.Id);
+           
+            if (machine == null)
+            {
+                machine = new Machine
+                {
+                    Model = "Неизвестен модел", 
+
+                    ObjectEntityId = obj.Id,
+
+                    SerialNumber = "N/A"
+                };
+
+                _context.Machines.Add(machine);
+
+                _context.SaveChanges(); 
+            }
+
+            
+            var request = new ServiceRequest// заявката за авария
             {
                 RequestType = "Авария",
 
+                MachineId = machine.Id,  
+                
                 Description = $"Авария на обект {obj.Name}. Детайли: {emergencyDetails}",
 
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
+
+                Requester = "N/A"                     
             };
 
             _context.ServiceRequests.Add(request);
@@ -272,13 +356,18 @@ namespace CoffeeTechnik.Controllers
 
             TempData["SuccessMessage"] = "Заявката за авария е запаметена успешно!";
 
-            return RedirectToAction("CreateEmergency"); 
+            return RedirectToAction("CreateEmergency");
         }
+
+
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateMaintenance(string objectName, string requestFrom)
+        public IActionResult CreateMaintenance(string objectName, string requestFrom)// заявка за профилактика
         {
+            
             if (string.IsNullOrEmpty(objectName) || string.IsNullOrEmpty(requestFrom))
             {
                 TempData["ErrorMessage"] = "Моля, попълнете задължителните полета!";
@@ -286,25 +375,66 @@ namespace CoffeeTechnik.Controllers
                 return RedirectToAction("CreateMaintenance");
             }
 
-          
+            
             var obj = _context.Objects.FirstOrDefault(o => o.Name == objectName);
            
             if (obj == null)
             {
-                obj = new ObjectEntity { Name = objectName, Type = "Профилактика" };
+                obj = new ObjectEntity
+                {
+                    Name = objectName,
+
+                    Type = "Профилактика",
+
+                    Bulstat = "N/A",     
+                    
+                    City = "N/A",
+
+                    Address = "N/A",
+
+                    ContactPerson = "N/A",
+
+                    PhoneNumber = "N/A",
+
+                    Firma = "Неизвестна"      
+                };
 
                 _context.Objects.Add(obj);
 
-                _context.SaveChanges();
+                _context.SaveChanges(); 
             }
 
-            var request = new ServiceRequest
+            
+            var machine = _context.Machines.FirstOrDefault(m => m.ObjectEntityId == obj.Id);
+           
+            if (machine == null)
+            {
+                machine = new Machine
+                {
+                    Model = "Неизвестен модел", 
+
+                    ObjectEntityId = obj.Id,
+
+                    SerialNumber = "N/A"
+                };
+
+                _context.Machines.Add(machine);
+
+                _context.SaveChanges(); 
+            }
+
+            
+            var request = new ServiceRequest// заявката за профилактика
             {
                 RequestType = "Профилактика",
 
+                MachineId = machine.Id,        
+                
                 Description = $"Профилактика на обект {obj.Name}. От: {requestFrom}",
 
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
+
+                Requester = requestFrom                    
             };
 
             _context.ServiceRequests.Add(request);
@@ -313,19 +443,24 @@ namespace CoffeeTechnik.Controllers
 
             TempData["SuccessMessage"] = "Заявката за профилактика е запаметена успешно!";
 
-            return RedirectToAction("CreateMaintenance"); 
+            return RedirectToAction("CreateMaintenance");
         }
 
+
         #endregion
+
+
+
 
         #region Edit & Delete
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(int id)// изтриване на заявка
         {
            
             var request = _context.ServiceRequests.Find(id);
+           
             if (request == null)
             {
                 TempData["ErrorMessage"] = "Заявката не беше намерена!";
@@ -342,40 +477,58 @@ namespace CoffeeTechnik.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public IActionResult DeleteObject()// страница за изтриване на обект
+        {
+            return View(new DeleteObjectViewModel());
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteObject([FromBody] DeleteObjectViewModel model)
+        public IActionResult DeleteObject(DeleteObjectViewModel model)
         {
-
             if (string.IsNullOrEmpty(model.Name))
             {
-                return Json(new { success = false, message = "Моля, въведете име на обекта!" });
+                TempData["ErrorMessage"] = "Моля, въведете име на обекта!";
+
+                return View(model);
             }
 
-            
-            var obj = _context.Objects.FirstOrDefault(o => o.Name == model.Name);// намери обекта по име
-           
+            var obj = _context.Objects
+                .FirstOrDefault(o => o.Name.ToLower() == model.Name.ToLower());
+
             if (obj == null)
             {
-                return Json(new { success = false, message = "Обектът не беше намерен!" });
+                TempData["ErrorMessage"] = "Обектът не беше намерен!";
+
+                return View(model);
             }
 
             
-            var machines = _context.Machines.Where(m => m.ObjectEntityId == obj.Id).ToList();
-           
+            var machines = _context.Machines
+                .Where(m => m.ObjectEntityId == obj.Id)
+                .ToList();
+
             foreach (var machine in machines)
             {
-                var requests = _context.ServiceRequests.Where(r => r.MachineId == machine.Id).ToList();
+                var requests = _context.ServiceRequests
+                    .Where(r => r.MachineId == machine.Id)
+                    .ToList();
+
 
                 _context.ServiceRequests.RemoveRange(requests);
             }
+
             _context.Machines.RemoveRange(machines);
 
             _context.Objects.Remove(obj);
 
             _context.SaveChanges();
 
-            return Json(new { success = true, message = $"Обектът '{model.Name}' беше изтрит успешно!" });
+            TempData["SuccessMessage"] = $"Обектът '{model.Name}' беше изтрит успешно!";
+
+            return RedirectToAction("DeleteObject");
         }
 
 
@@ -410,6 +563,7 @@ namespace CoffeeTechnik.Controllers
                 return NotFound();
 
             request.Description = model.Description;
+
             request.RequestType = model.RequestType;
 
             _context.SaveChanges();

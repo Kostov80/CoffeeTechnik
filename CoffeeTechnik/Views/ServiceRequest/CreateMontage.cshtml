@@ -8,6 +8,11 @@
 
 <form asp-action="CreateMontage" method="post">
 
+
+    @Html.AntiForgeryToken()
+
+
+
     <div class="mb-3">
         <label asp-for="ObjectName" class="form-label">Име на обекта</label>
         <input asp-for="ObjectName" class="form-control" />

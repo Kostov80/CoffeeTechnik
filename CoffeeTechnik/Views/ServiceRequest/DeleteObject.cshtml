@@ -1,0 +1,40 @@
+﻿@model CoffeeTechnik.Models.DeleteObjectViewModel
+
+@{
+    ViewData["Title"] = "Изтрий обект";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Изтрий обект</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success text-center">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger text-center">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <form asp-action="DeleteObject" asp-controller="ServiceRequest" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="mb-3">
+            <label class="form-label">Име на обекта</label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-danger">
+            Изтрий обекта
+        </button>
+    </form>
+
+    <a asp-action="Index" class="btn btn-secondary mt-3">
+        Назад
+    </a>
+</div>
