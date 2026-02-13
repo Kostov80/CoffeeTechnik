@@ -21,6 +21,7 @@
     </div>
 
     <div class="mb-3">
+
         <label asp-for="City" class="form-label">Град</label>
         <input asp-for="City" class="form-control" />
         <span asp-validation-for="City" class="text-danger"></span>
@@ -44,7 +45,7 @@
         <span asp-validation-for="Phone" class="text-danger"></span>
     </div>
 
-    
+
 
     <div class="mb-3">
         <label asp-for="MachineModel" class="form-label">Модел на машината</label>
@@ -58,11 +59,19 @@
         <span asp-validation-for="MachineConnection" class="text-danger"></span>
     </div>
 
+  
     <div class="mb-3">
         <label asp-for="Location" class="form-label">Локация</label>
         <input asp-for="Location" class="form-control" />
         <span asp-validation-for="Location" class="text-danger"></span>
     </div>
+
+    <div class="mb-3">
+        <label asp-for="Requester" class="form-label">Заявител</label>
+        <input asp-for="Requester" class="form-control" />
+        <span asp-validation-for="Requester" class="text-danger"></span>
+    </div>
+
 
     <button type="submit" class="btn btn-primary">Запази заявката</button>
 

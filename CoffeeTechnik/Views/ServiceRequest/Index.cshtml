@@ -33,41 +33,11 @@
             </button>
 
             <ul class="dropdown-menu" aria-labelledby="filterMenuButton">
-                <li>
-                    <a class="dropdown-item"
-                       asp-action="Index"
-                       asp-route-requestType="">
-                        Всички
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item"
-                       asp-action="Index"
-                       asp-route-requestType="Монтаж">
-                        Монтаж
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item"
-                       asp-action="Index"
-                       asp-route-requestType="Демонтаж">
-                        Демонтаж
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item"
-                       asp-action="Index"
-                       asp-route-requestType="Авария">
-                        Авария
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item"
-                       asp-action="Index"
-                       asp-route-requestType="Профилактика">
-                        Профилактика
-                    </a>
-                </li>
+                <li><a class="dropdown-item" asp-action="Index" asp-route-requestType="">Всички</a></li>
+                <li><a class="dropdown-item" asp-action="Index" asp-route-requestType="Монтаж">Монтаж</a></li>
+                <li><a class="dropdown-item" asp-action="Index" asp-route-requestType="Демонтаж">Демонтаж</a></li>
+                <li><a class="dropdown-item" asp-action="Index" asp-route-requestType="Авария">Авария</a></li>
+                <li><a class="dropdown-item" asp-action="Index" asp-route-requestType="Профилактика">Профилактика</a></li>
             </ul>
         </div>
     </div>
@@ -85,7 +55,6 @@
                 <th>Действия</th>
             </tr>
         </thead>
-
         <tbody>
             @if (Model != null && Model.Any())
             {
@@ -98,18 +67,13 @@
                         <td>@item.RequestType</td>
                         <td>@item.Description</td>
                         <td>@item.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
-                        <td>
-                            <form asp-action="Delete"
-                                  method="post"
-                                  onsubmit="return confirm('Сигурни ли сте, че искате да изтриете заявката?');">
+                        <td class="d-flex gap-2">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Редактирай</a>
 
+                            <form asp-action="Delete" method="post" onsubmit="return confirm('Сигурни ли сте, че искате да изтриете заявката?');">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="id" value="@item.Id" />
-
-                                <button type="submit"
-                                        class="btn btn-danger btn-sm">
-                                    Изтрий
-                                </button>
+                                <button type="submit" class="btn btn-danger btn-sm">Изтрий</button>
                             </form>
                         </td>
                     </tr>
@@ -118,9 +82,7 @@
             else
             {
                 <tr>
-                    <td colspan="7" class="text-center">
-                        Няма въведени заявки.
-                    </td>
+                    <td colspan="7" class="text-center">Няма въведени заявки.</td>
                 </tr>
             }
         </tbody>
@@ -128,35 +90,67 @@
 </div>
 
 <!-- Постоянен бутон "Назад" долу вляво -->
-<a asp-controller="Home"
-   asp-action="Index"
-   class="btn shadow"
-   style="
-       position: fixed;
-       bottom: 20px;
-       left: 20px;
-       z-index: 2000;
-       background-color: #6c757d;
-       color: white;
-       border: none;
-       width: 120px;
-   ">
+<a asp-controller="Home" asp-action="Index" class="btn shadow"
+   style="position: fixed; bottom: 20px; left: 20px; z-index:2000; background-color: #6c757d; color:white; border:none; width:120px;">
     ← Назад
 </a>
 
-<!-- Постоянен бутон "Нова заявка" долу вдясно -->
-<a asp-controller="ServiceRequest"
-   asp-action="Create"
-   class="btn shadow"
-   style="
-       position: fixed;
-       bottom: 20px;
-       right: 20px;
-       z-index: 2000;
-       background-color: #0d6efd;
-       color: white;
-       border: none;
-       width: 150px;
-   ">
-    Нова заявка
-</a>
+<!-- Контейнер за бутоните "Нова заявка" и "Изтрий обект" -->
+<div style="position: fixed; bottom: 20px; right: 20px; z-index:2000; display:flex; gap:10px;">
+
+    <a asp-controller="ServiceRequest" asp-action="Create" class="btn shadow"
+       style="background-color: #0d6efd; color:white; border:none; width:150px;">
+        Нова заявка
+    </a>
+
+    <button id="btnDeleteObject" class="btn shadow" style="background-color:red; color:white; border:none; width:150px;">
+        Изтрий обект
+    </button>
+</div>
+
+<!-- Поле за въвеждане на обект за изтриване (по подразбиране скрито) -->
+<div id="deleteObjectDiv" style="display:none; position: fixed; bottom: 80px; right: 20px; z-index:2000;">
+    <input id="objectToDelete" type="text" class="form-control d-inline w-50" placeholder="Име на обекта" />
+    <button id="confirmDelete" class="btn btn-danger ms-2">Потвърди</button>
+</div>
+
+@section Scripts {
+    <script>
+        const btnDelete = document.getElementById('btnDeleteObject');
+
+        const deleteDiv = document.getElementById('deleteObjectDiv');
+
+        const confirmBtn = document.getElementById('confirmDelete');
+
+        btnDelete.addEventListener('click', () =>
+        {
+            deleteDiv.style.display = deleteDiv.style.display === 'none' ? 'block' : 'none';
+        });
+
+        confirmBtn.addEventListener('click', () =>
+        {
+            const objName = document.getElementById('objectToDelete').value;
+            if (!objName)
+            {
+                alert('Моля, въведете име на обекта!');
+                return;
+            }
+
+            fetch('/ServiceRequest/DeleteObject', {
+                method: 'POST',
+                headers:
+                {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify({ name: objName })
+            })
+            .then(res => res.json())
+            .then(data => 
+            {
+                alert(data.message);
+                if(data.success) location.reload();
+            });
+        });
+    </script>
+}

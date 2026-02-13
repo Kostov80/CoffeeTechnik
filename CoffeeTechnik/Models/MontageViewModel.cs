@@ -47,6 +47,10 @@ namespace CoffeeTechnik.Models
         [Required(ErrorMessage = "Моля, въведете локация")]
         public string Location
         { get; set; }
+
+        [Required(ErrorMessage = "Моля, въведете името на заявителя")]
+        public string Requester 
+        { get; set; }
+
     }
 }
-

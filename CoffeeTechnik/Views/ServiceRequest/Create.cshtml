@@ -10,15 +10,23 @@
 
     <!-- Бутоните за различните типове заявки -->
     <div class="d-flex flex-column align-items-center gap-3 mb-5">
-        <a asp-controller="ServiceRequest" asp-action="CreateMontage" class="btn btn-outline-primary btn-lg w-50">Монтаж</a>
-        <a asp-controller="ServiceRequest" asp-action="CreateDemontage" class="btn btn-outline-secondary btn-lg w-50">Демонтаж</a>
-        <a asp-controller="ServiceRequest" asp-action="CreateEmergency" class="btn btn-outline-danger btn-lg w-50">Авария</a>
-        <a asp-controller="ServiceRequest" asp-action="CreateMaintenance" class="btn btn-outline-success btn-lg w-50">Профилактика</a>
+        <a asp-controller="ServiceRequest" asp-action="CreateMontage" class="btn btn-outline-primary btn-lg w-50">
+            Монтаж
+        </a>
+        <a asp-controller="ServiceRequest" asp-action="CreateDemontage" class="btn btn-outline-secondary btn-lg w-50">
+            Демонтаж
+        </a>
+        <a asp-controller="ServiceRequest" asp-action="CreateEmergency" class="btn btn-outline-danger btn-lg w-50">
+            Авария
+        </a>
+        <a asp-controller="ServiceRequest" asp-action="CreateMaintenance" class="btn btn-outline-success btn-lg w-50">
+            Профилактика
+        </a>
     </div>
 
 </div>
 
-<!-- Бутон "Виж заявки" долу вдясно -->
+<!-- Фиксиран бутон "Виж заявки" долу вдясно -->
 <a class="btn btn-info"
    asp-action="Index"
    asp-controller="ServiceRequest"
@@ -31,3 +39,7 @@
    style="position: fixed; bottom: 20px; left: 20px; z-index: 1000;">
     ← Назад
 </a>
+
+<!-- Забележка: След като избереш тип на заявката (например Монтаж),
+     ще се зареди отделна форма, където ще избираш машина от dropdown.
+     Това премахва нуждата от ръчно попълване на обект или машина тук. -->
