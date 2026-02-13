@@ -1,21 +1,22 @@
-﻿@model ServiceRequest
-
-<h2>Edit Request</h2>
+﻿@model EditServiceRequestViewModel
 
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="Id" />
 
     <div class="mb-3">
-        <label asp-for="RequestType" class="form-label"></label>
-        <input asp-for="RequestType" class="form-control" />
-        <span asp-validation-for="RequestType" class="text-danger"></span>
+        <label asp-for="Description" class="form-label"></label>
+        <input asp-for="Description" class="form-control" />
     </div>
 
     <div class="mb-3">
-        <label asp-for="Description" class="form-label"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
+        <label asp-for="RequestType" class="form-label"></label>
+        <input asp-for="RequestType" class="form-control" />
     </div>
 
-    <button type="submit" class="btn btn-primary">Save</button>
+    <div class="mb-3">
+        <label asp-for="Requester" class="form-label"></label>
+        <input asp-for="Requester" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Запази</button>
 </form>

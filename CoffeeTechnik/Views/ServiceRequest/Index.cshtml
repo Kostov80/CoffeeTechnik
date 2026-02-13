@@ -68,6 +68,8 @@
                         <td>@item.Description</td>
                         <td>@item.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
                         <td class="d-flex gap-2">
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+
                             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Редактирай</a>
 
                             <form asp-action="Delete" method="post" onsubmit="return confirm('Сигурни ли сте, че искате да изтриете заявката?');">
@@ -105,15 +107,8 @@
         Нова заявка
     </a>
 
-    <button id="btnDeleteObject" class="btn shadow" style="background-color:red; color:white; border:none; width:150px;">
-        Изтрий обект
-    </button>
+   
 </div>
-
-<!-- Поле за въвеждане на обект за изтриване (по подразбиране скрито) -->
-<div id="deleteObjectDiv" style="display:none; position: fixed; bottom: 80px; right: 20px; z-index:2000;">
-    <input id="objectToDelete" type="text" class="form-control d-inline w-50" placeholder="Име на обекта" />
-    <button id="confirmDelete" class="btn btn-danger ms-2">Потвърди</button>
 </div>
 
 @section Scripts {

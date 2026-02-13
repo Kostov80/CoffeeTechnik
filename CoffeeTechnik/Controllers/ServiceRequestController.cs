@@ -16,6 +16,33 @@ namespace CoffeeTechnik.Controllers
             _context = context;
         }
 
+        public IActionResult Index()//  всички заявки
+        {
+            var requests = _context.ServiceRequests
+                .OrderByDescending(r => r.CreatedAt)
+                .ToList();
+
+
+            return View(requests);
+        }
+
+
+        public IActionResult Details(int id)// страница с детайли за заявка
+        {
+            var request = _context.ServiceRequests
+                .FirstOrDefault(r => r.Id == id);
+
+            if (request == null)
+            {
+                return NotFound();
+            }
+
+            return View(request);
+        }
+
+
+
+
 
         #region Index
 
@@ -533,43 +560,48 @@ namespace CoffeeTechnik.Controllers
 
 
         [HttpGet]
-        public IActionResult Edit(int id)// страница за редактиране на заявка
+        public IActionResult Edit(int id)
         {
-            var request = _context.ServiceRequests
+            var request = _context.ServiceRequests.FirstOrDefault(r => r.Id == id);
+            if (request == null) return NotFound();
 
-                .Include(r => r.Machine)
+            var model = new EditServiceRequestViewModel
+            {
+                Id = request.Id,
 
-                .ThenInclude(m => m.ObjectEntity)
+                Description = request.Description,
 
-                .FirstOrDefault(r => r.Id == id);
+                RequestType = request.RequestType,
 
-            if (request == null)
-                return NotFound();
+                Requester = request.Requester
+            };
 
-            return View(request);
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(ServiceRequest model)
+        public IActionResult Edit(EditServiceRequestViewModel model)// редактиране на заявка
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            
             var request = _context.ServiceRequests.Find(model.Id);
            
-            if (request == null)
-                return NotFound();
+            if (request == null) return NotFound();
 
             request.Description = model.Description;
 
             request.RequestType = model.RequestType;
 
+            request.Requester = model.Requester;
+
             _context.SaveChanges();
 
             return RedirectToAction("Index");
         }
+
+
 
         #endregion
     }
