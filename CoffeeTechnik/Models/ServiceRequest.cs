@@ -47,5 +47,29 @@ namespace CoffeeTechnik.Models
         [ForeignKey("MachineId")]
         public Machine Machine
         { get; set; } = null!;
+
+        public DateTime CreatedAt 
+        { get; internal set; }
+
+        public string? MontajOpisanie
+        { get; set; }
+
+        public DateTime? MontajDate
+        { get; set; }
+
+
+        public string? ProfilaktikaOpisanie 
+        { get; set; }
+
+        public DateTime? ProfilaktikaDate 
+        { get; set; }
+
+
+        public string? AvariaOpisanie 
+        { get; set; }
+
+        public DateTime? AvariaDate 
+        { get; set; }
+
     }
 }

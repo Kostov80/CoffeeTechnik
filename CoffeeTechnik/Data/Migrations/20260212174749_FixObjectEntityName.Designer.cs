@@ -4,6 +4,7 @@ using CoffeeTechnik.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CoffeeTechnik.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260212174749_FixObjectEntityName")]
+    partial class FixObjectEntityName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,12 +104,6 @@ namespace CoffeeTechnik.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("AvariaDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("AvariaOpisanie")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -120,18 +117,6 @@ namespace CoffeeTechnik.Data.Migrations
 
                     b.Property<int>("MachineId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime?>("MontajDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("MontajOpisanie")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ProfilaktikaDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ProfilaktikaOpisanie")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RequestType")
                         .IsRequired()

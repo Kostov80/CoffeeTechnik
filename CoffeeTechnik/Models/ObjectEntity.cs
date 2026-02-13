@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Reflection.PortableExecutable;
+
 
 namespace CoffeeTechnik.Models
 {
@@ -39,7 +39,7 @@ namespace CoffeeTechnik.Models
         { get; set; } = null!;
 
         [Display(Name = "Телефон")]
-        public string? PhoneNumber 
+        public string? PhoneNumber
         { get; set; }
 
                

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using System.ComponentModel.DataAnnotations;
 
 namespace CoffeeTechnik.Models
 {
@@ -10,12 +11,12 @@ namespace CoffeeTechnik.Models
 
 
         [Required(ErrorMessage = "Моля, въведете булстат")]
-        public string BULSTAT 
+        public string BULSTAT
         { get; set; }
 
 
         [Required(ErrorMessage = "Моля, въведете град")]
-        public string City 
+        public string City
         { get; set; }
 
 
@@ -31,20 +32,21 @@ namespace CoffeeTechnik.Models
 
         [Required(ErrorMessage = "Моля, въведете телефон")]
         [Phone(ErrorMessage = "Невалиден телефонен номер")]
-        public string Phone 
+        public string Phone
         { get; set; }
 
 
         [Required(ErrorMessage = "Моля, въведете модел на машината")]
-        public string MachineModel 
+        public string MachineModel
         { get; set; }
 
         [Required(ErrorMessage = "Моля, свържете машината")]
-        public string MachineConnection 
+        public string MachineConnection
         { get; set; }
 
         [Required(ErrorMessage = "Моля, въведете локация")]
-        public string Location 
+        public string Location
         { get; set; }
     }
 }
+

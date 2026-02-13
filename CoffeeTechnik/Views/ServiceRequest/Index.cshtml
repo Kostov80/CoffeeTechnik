@@ -9,60 +9,125 @@
 
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-    }
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        <div class="alert alert-success text-center">
+            @TempData["SuccessMessage"]
+        </div>
     }
 
-    
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger text-center">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <!-- Dropdown за филтриране -->
     <div class="d-flex justify-content-center mb-3">
         <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="filterMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            <button class="btn btn-secondary dropdown-toggle"
+                    type="button"
+                    id="filterMenuButton"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
                 Филтрирай по тип
             </button>
+
             <ul class="dropdown-menu" aria-labelledby="filterMenuButton">
-                <li><a class="dropdown-item" asp-action="Index" asp-route-requestType="">Всички</a></li>
-                <li><a class="dropdown-item" asp-action="Index" asp-route-requestType="Монтаж">Монтаж</a></li>
-                <li><a class="dropdown-item" asp-action="Index" asp-route-requestType="Демонтаж">Демонтаж</a></li>
-                <li><a class="dropdown-item" asp-action="Index" asp-route-requestType="Авария">Авария</a></li>
-                <li><a class="dropdown-item" asp-action="Index" asp-route-requestType="Профилактика">Профилактика</a></li>
+                <li>
+                    <a class="dropdown-item"
+                       asp-action="Index"
+                       asp-route-requestType="">
+                        Всички
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item"
+                       asp-action="Index"
+                       asp-route-requestType="Монтаж">
+                        Монтаж
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item"
+                       asp-action="Index"
+                       asp-route-requestType="Демонтаж">
+                        Демонтаж
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item"
+                       asp-action="Index"
+                       asp-route-requestType="Авария">
+                        Авария
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item"
+                       asp-action="Index"
+                       asp-route-requestType="Профилактика">
+                        Профилактика
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
 
-    
-    <table class="table table-bordered">
-        <thead>
+    <!-- Таблица със заявки -->
+    <table class="table table-bordered table-striped table-hover">
+        <thead class="table-dark">
             <tr>
                 <th>Обект</th>
                 <th>Град</th>
                 <th>Модел машина</th>
+                <th>Тип</th>
+                <th>Описание</th>
+                <th>Дата</th>
                 <th>Действия</th>
             </tr>
         </thead>
+
         <tbody>
-            @foreach (var item in Model)
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@(item.Machine?.ObjectEntity?.Name ?? "–")</td>
+                        <td>@(item.Machine?.ObjectEntity?.City ?? "–")</td>
+                        <td>@(item.Machine?.Model ?? "–")</td>
+                        <td>@item.RequestType</td>
+                        <td>@item.Description</td>
+                        <td>@item.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>
+                            <form asp-action="Delete"
+                                  method="post"
+                                  onsubmit="return confirm('Сигурни ли сте, че искате да изтриете заявката?');">
+
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@item.Id" />
+
+                                <button type="submit"
+                                        class="btn btn-danger btn-sm">
+                                    Изтрий
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            else
             {
                 <tr>
-                    <td>@item.Machine?.ObjectEntity?.Name ?? "–"</td>
-                    <td>@item.Machine?.ObjectEntity?.City ?? "–"</td>
-                    <td>@item.Machine?.Model ?? "–"</td>
-                    <td>
-                        <form asp-action="Delete" method="post" onsubmit="return confirm('Сигурни ли сте, че искате да изтриете заявката?');">
-                            <input type="hidden" name="id" value="@item.Id" />
-                            <button type="submit" class="btn btn-danger btn-sm">Изтрий</button>
-                        </form>
+                    <td colspan="7" class="text-center">
+                        Няма въведени заявки.
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-       
 </div>
 
-
+<!-- Постоянен бутон "Назад" долу вляво -->
 <a asp-controller="Home"
    asp-action="Index"
    class="btn shadow"
@@ -71,15 +136,15 @@
        bottom: 20px;
        left: 20px;
        z-index: 2000;
-       background-color: #6c757d; /* постоянен сив цвят */
-       color: white; /* текстът да е бял */
+       background-color: #6c757d;
+       color: white;
        border: none;
        width: 120px;
    ">
     ← Назад
 </a>
 
-
+<!-- Постоянен бутон "Нова заявка" долу вдясно -->
 <a asp-controller="ServiceRequest"
    asp-action="Create"
    class="btn shadow"
@@ -95,5 +160,3 @@
    ">
     Нова заявка
 </a>
-
-
