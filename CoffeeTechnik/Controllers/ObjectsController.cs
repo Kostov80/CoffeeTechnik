@@ -105,30 +105,34 @@ namespace CoffeeTechnik.Controllers
             return View(demontageObjects);
         }
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id) // Изтриване на обект
+        public IActionResult Delete(int id)
         {
-            var obj = _context.Objects.Find(id);
+            var obj = _context.Objects.Include(o => o.Machines)
+                .FirstOrDefault(o => o.Id == id);
 
             if (obj == null)
                 return NotFound();
 
-            if (obj.Machines.Any())
+            if (obj.Machines != null && obj.Machines.Any())
             {
-                TempData["Error"] = "Обектът има машини и не може да се изтрие!";
-                return RedirectToAction("Index");
+                TempData["Error"] = "Обектът не може да бъде изтрит, защото има свързани машини.";
+
+                return RedirectToAction(nameof(Index));
             }
 
             _context.Objects.Remove(obj);
+
             _context.SaveChanges();
 
             TempData["Success"] = "Обектът беше успешно изтрит.";
-            return RedirectToAction("Index");
+
+            return RedirectToAction(nameof(Index));
         }
 
-        
+
         private List<SelectListItem> GetObjectTypes() 
         {
             return new List<SelectListItem>
