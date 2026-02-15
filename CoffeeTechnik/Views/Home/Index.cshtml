@@ -1,9 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Начало";
 
-    
     string role = TempData["UserRole"] as string ?? "Guest";
-    TempData.Keep("UserRole"); // Запазва ролята след пренасочване
+
+    TempData.Keep("UserRole");
 }
 
 <div class="container mt-4">
@@ -67,16 +67,5 @@
         </div>
 
     </div>
-        
-    @if (role == "Technician" || role == "Sales")
-    {
-        <div class="mt-5 text-center">
-            <form asp-controller="Account" asp-action="Logout" method="post">
-                <button type="submit" class="btn btn-danger btn-lg">
-                    Изход
-                </button>
-            </form>
-        </div>
-    }
 
 </div>

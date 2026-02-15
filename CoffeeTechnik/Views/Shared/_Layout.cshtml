@@ -1,7 +1,9 @@
 ﻿@{
-    
-    string role = TempData["UserRole"] as string ?? "Guest";
-    TempData.Keep("UserRole"); // За да се запази след пренасочване
+    var role = TempData["UserRole"]?.ToString() ?? "Guest";
+    TempData.Keep("UserRole");
+
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
 }
 
 <!DOCTYPE html>
@@ -17,95 +19,95 @@
 </head>
 <body>
 
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
-                    CoffeeTechnik
-                </a>
+    @* Показваме navbar само ако НЕ сме на Login страницата *@
+    @if (!(currentController == "Account" && currentAction == "Login"))
+    {
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
+                <div class="container-fluid">
 
-                <div class="collapse navbar-collapse">
-                    <ul class="navbar-nav me-auto">
+                    <a class="navbar-brand text-white" asp-controller="Home" asp-action="Index">
+                        CoffeeTechnik
+                    </a>
 
-                        
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Index">Начало</a>
-                        </li>
+                    <button class="navbar-toggler" type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#navbarNav"
+                            aria-controls="navbarNav"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
 
-                        <
-                        @if (role == "Sales")
-                        {
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-auto">
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="ServiceRequest" asp-action="Create">Нова заявка</a>
+                                <a class="nav-link text-white" asp-controller="Home" asp-action="Index">Начало</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Objects" asp-action="Index">Обекти</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Machines" asp-action="Index">Машини</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Reports" asp-action="Index">Справки</a>
-                            </li>
-                        }
 
-                        
-                        @if (role == "Technician")
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Objects" asp-action="Index">Обекти</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Machines" asp-action="Index">Машини</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Service" asp-action="Index">Сервизна дейност</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Warehouse" asp-action="Index">Склад</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Reports" asp-action="Index">Справки</a>
-                            </li>
-                        }
+                            @if (role == "Sales")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="ServiceRequest" asp-action="Create">Нова заявка</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Objects" asp-action="Index">Обекти</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Machines" asp-action="Index">Машини</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Reports" asp-action="Index">Справки</a>
+                                </li>
+                            }
 
-                        
-                        @if (role == "Guest")
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Objects" asp-action="Index">Обекти</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Reports" asp-action="Index">Справки</a>
-                            </li>
-                        }
+                            @if (role == "Technician")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Objects" asp-action="Index">Обекти</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Machines" asp-action="Index">Машини</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Service" asp-action="Index">Сервизна дейност</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Warehouse" asp-action="Index">Склад</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Reports" asp-action="Index">Справки</a>
+                                </li>
+                            }
 
-                    </ul>
+                            @if (role == "Guest")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Objects" asp-action="Index">Обекти</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Reports" asp-action="Index">Справки</a>
+                                </li>
+                            }
 
-                    <span class="navbar-text me-3">
-                        Роля: @role
-                    </span>
+                        </ul>
 
-                    @if (role == "Guest")
-                    {
-                        <a class="btn btn-outline-secondary"
-                           asp-controller="Account"
-                           asp-action="Login">
-                            Вход
-                        </a>
-                    }
-                    else
-                    {
+                        @* Покажи Изход само ако потребителят е влязъл или е гост *@
+                        <span class="navbar-text text-white me-3">
+                            Роля: @role
+                        </span>
+
                         <a class="btn btn-outline-danger"
                            asp-controller="Account"
                            asp-action="Logout">
                             Изход
                         </a>
-                    }
+
+                    </div>
                 </div>
-            </div>
-        </nav>
-    </header>
+            </nav>
+        </header>
+    }
 
     <div class="container">
         <main role="main" class="pb-3">
@@ -122,6 +124,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>
