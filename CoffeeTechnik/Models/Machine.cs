@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CoffeeTechnik.Models
@@ -10,36 +12,41 @@ namespace CoffeeTechnik.Models
 
 
 
-        [Required]
+        [Required(ErrorMessage = "Моделът е задължителен.")]
+        [StringLength(100, MinimumLength = 2,
+            ErrorMessage = "Моделът трябва да бъде между 2 и 100 символа.")]
         [Display(Name = "Модел")]
         public string Model
         { get; set; } = null!;
 
 
-
-        [Required]
+        [Required(ErrorMessage = "Серийният номер е задължителен.")]
+        [StringLength(50, MinimumLength = 3,
+            ErrorMessage = "Серийният номер трябва да бъде между 3 и 50 символа.")]
         [Display(Name = "Сериен номер")]
         public string SerialNumber 
         { get; set; } = null!;
 
+
+
         [Display(Name = "Дата на инсталация")]
-        public DateTime? InstallationDate
+        [DataType(DataType.Date)]
+        public DateTime? InstallationDate 
         { get; set; }
 
 
-        
+        [Required(ErrorMessage = "Трябва да изберете обект.")]
         [Display(Name = "Обект")]
         public int ObjectEntityId
         { get; set; }
 
 
-        [ForeignKey("ObjectEntityId")]
-        public ObjectEntity ObjectEntity 
+        [ForeignKey(nameof(ObjectEntityId))]
+        public ObjectEntity ObjectEntity
         { get; set; } = null!;
 
-        
 
-        public ICollection<ServiceRequest> ServiceRequests // Една машина има много заявки
-        { get; set; } = new List<ServiceRequest>();
+        // Една машина има много заявки
+        public ICollection<ServiceRequest> ServiceRequests { get; set; } = new List<ServiceRequest>();
     }
 }
