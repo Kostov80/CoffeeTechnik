@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using CoffeeTechnik.Models;
+using CoffeeTechnik.Data.Entities; 
 
 namespace CoffeeTechnik.Data
 {
@@ -12,13 +13,15 @@ namespace CoffeeTechnik.Data
 
         }
 
-        public DbSet<ObjectEntity> Objects 
+        public DbSet<ObjectEntity> Objects
         { get; set; } = null!;
-
-        public DbSet<Machine> Machines
+        public DbSet<Machine> Machines 
         { get; set; } = null!;
-
         public DbSet<ServiceRequest> ServiceRequests 
+        { get; set; } = null!;
+
+        // DbSet за CoffeeMachines
+        public DbSet<CoffeeMachineEntity> Coffees 
         { get; set; } = null!;
     }
 }
