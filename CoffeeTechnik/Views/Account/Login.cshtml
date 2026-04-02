@@ -19,10 +19,10 @@
 
             <div class="mb-3">
                 <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control" />
+                <input asp-for="Password" class="form-control" type="password" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-                        
+
             <div class="mb-3">
                 <label asp-for="Role" class="form-label"></label>
                 <select asp-for="Role" class="form-select">
@@ -47,8 +47,15 @@
 
         <a asp-controller="Account"
            asp-action="GuestLogin"
-           class="btn btn-secondary w-100">
+           class="btn btn-secondary w-100 mb-2">
             Влез като гост
+        </a>
+
+        
+        <a asp-controller="Account"
+           asp-action="Register"
+           class="btn btn-success w-100">
+            Регистрация
         </a>
 
     </div>

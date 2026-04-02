@@ -20,8 +20,8 @@
 </head>
 <body>
 
-    
-    @if (!(currentController == "Account" && currentAction == "Login"))
+    @* Скриваме navbar при Login и Register *@
+    @if (!(currentController == "Account" && (currentAction == "Login" || currentAction == "Register")))
     {
         <header>
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
@@ -33,10 +33,7 @@
 
                     <button class="navbar-toggler" type="button"
                             data-bs-toggle="collapse"
-                            data-bs-target="#navbarNav"
-                            aria-controls="navbarNav"
-                            aria-expanded="false"
-                            aria-label="Toggle navigation">
+                            data-bs-target="#navbarNav">
                         <span class="navbar-toggler-icon"></span>
                     </button>
 
@@ -51,7 +48,6 @@
                                 <a class="nav-link text-white" asp-controller="Home" asp-action="Dashboard">Dashboard</a>
                             </li>
 
-                            
                             @if (role == "Sales")
                             {
                                 <li class="nav-item">
@@ -68,7 +64,6 @@
                                 </li>
                             }
 
-                            
                             @if (role == "Technician")
                             {
                                 <li class="nav-item">
@@ -88,7 +83,6 @@
                                 </li>
                             }
 
-                            
                             @if (role == "Guest")
                             {
                                 <li class="nav-item">
@@ -118,6 +112,15 @@
     }
 
     <div class="container">
+
+        @* ✅ СЪОБЩЕНИЕ ЗА УСПЕХ *@
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success text-center mt-3">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
