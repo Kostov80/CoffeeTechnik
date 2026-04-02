@@ -44,4 +44,10 @@ app.MapControllerRoute(
 
 app.MapRazorPages();
 
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    SeedData.Initialize(context);
+}
+
 app.Run();

@@ -14,20 +14,20 @@ namespace CoffeeTechnik.Controllers
         }
 
         
-        public IActionResult Index()// Начална страница
+        public IActionResult Index()
         {
             return View();
         }
 
         
-        public IActionResult Privacy()// Privacy
+        public IActionResult Privacy()
         {
             
             return View();
         }
 
         
-        public IActionResult AccessDenied()// Страница при достъп отказан
+        public IActionResult AccessDenied()
         {
             
             return View();
@@ -40,27 +40,27 @@ namespace CoffeeTechnik.Controllers
         }
 
         
-        public string GetUserRole() // Пример как да вземеш ролята от TempData/Session
+        public string GetUserRole() 
         {
             
             return TempData["UserRole"] as string ?? "Guest";
         }
 
         
-        public IActionResult CheckAccess(string actionName)// Проверка за достъп
+        public IActionResult CheckAccess(string actionName)
         {
             
             string role = GetUserRole();
-            TempData.Keep("UserRole"); // за следващи заявки
+            TempData.Keep("UserRole"); 
 
             
             
-            if (role == "Technician") return null; // Техник има достъп навсякъде
+            if (role == "Technician") return null; 
             
             if (role == "Sales")
             {
                 
-                if (actionName == "Index" || actionName == "Create") // Търговец може само Index и Create
+                if (actionName == "Index" || actionName == "Create") 
                     return null;
             }
             

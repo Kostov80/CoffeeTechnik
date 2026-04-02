@@ -22,6 +22,26 @@ namespace CoffeeTechnik.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("CoffeeTechnik.Data.Entities.CoffeeMachineEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Coffees");
+                });
+
             modelBuilder.Entity("CoffeeTechnik.Models.Machine", b =>
                 {
                     b.Property<int>("Id")
@@ -35,14 +55,16 @@ namespace CoffeeTechnik.Data.Migrations
 
                     b.Property<string>("Model")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("ObjectEntityId")
                         .HasColumnType("int");
 
                     b.Property<string>("SerialNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 

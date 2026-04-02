@@ -8,7 +8,7 @@ using CoffeeTechnik.Models;
 
 namespace CoffeeTechnik.Controllers
 {
-    public class MachinesController : Controller//управлява CRUD операциите за машините
+    public class MachinesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
@@ -20,7 +20,7 @@ namespace CoffeeTechnik.Controllers
 
        
 
-        public async Task<IActionResult> Index()// машините 
+        public async Task<IActionResult> Index()
         {
             var machines = _context.Machines.Include(m => m.ObjectEntity);
 
@@ -28,7 +28,7 @@ namespace CoffeeTechnik.Controllers
         }
 
         
-        public async Task<IActionResult> Details(int? id)//показва детайлите на конкретна машина
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
 
@@ -41,7 +41,7 @@ namespace CoffeeTechnik.Controllers
         }
 
         
-        public IActionResult Create()//формата създаване на нова машина
+        public IActionResult Create()
         {
             ViewBag.ObjectEntityId = new SelectList(_context.Objects, "Id", "Address");
 
@@ -50,7 +50,7 @@ namespace CoffeeTechnik.Controllers
 
         
         [HttpPost]
-        [ValidateAntiForgeryToken]//обработва данните за създаване на нова машина
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Model,SerialNumber,InstallationDate,ObjectEntityId")] Machine machine)
         {
             if (ModelState.IsValid)
@@ -70,7 +70,7 @@ namespace CoffeeTechnik.Controllers
         
 
 
-        public async Task<IActionResult> Edit(int? id)//формата за редактиране на съществуваща машина
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
 
@@ -86,7 +86,7 @@ namespace CoffeeTechnik.Controllers
 
         
         [HttpPost]
-        [ValidateAntiForgeryToken]  //обработва данните за редактиране на съществуваща машина
+        [ValidateAntiForgeryToken]  
         public async Task<IActionResult> Edit(int id, [Bind("Id,Model,SerialNumber,InstallationDate,ObjectEntityId")] Machine machine)
         {
             if (id != machine.Id) return NotFound();
@@ -121,7 +121,7 @@ namespace CoffeeTechnik.Controllers
 
 
         
-        public async Task<IActionResult> Delete(int? id)//формата за потвърждение на изтриване на машина
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
 
@@ -136,7 +136,7 @@ namespace CoffeeTechnik.Controllers
         
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)//обработва изтриването на машина след потвърждение
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var machine = await _context.Machines.FindAsync(id);
            
