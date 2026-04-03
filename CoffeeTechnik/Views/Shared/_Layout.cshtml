@@ -1,6 +1,7 @@
-﻿@{
-    var role = TempData["UserRole"]?.ToString() ?? "Guest";
-    TempData.Keep("UserRole");
+﻿@using Microsoft.AspNetCore.Http
+
+@{
+    var role = Context.Session.GetString("UserRole") ?? "Guest";
 
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
@@ -113,7 +114,7 @@
 
     <div class="container">
 
-        @* ✅ СЪОБЩЕНИЕ ЗА УСПЕХ *@
+        @* СЪОБЩЕНИЕ ЗА УСПЕХ *@
         @if (TempData["SuccessMessage"] != null)
         {
             <div class="alert alert-success text-center mt-3">
