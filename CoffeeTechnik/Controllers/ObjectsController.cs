@@ -3,6 +3,7 @@ using CoffeeTechnik.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace CoffeeTechnik.Controllers
 {
@@ -16,8 +17,9 @@ namespace CoffeeTechnik.Controllers
         }
 
         
-        public IActionResult Index()// Страница за обекти
+        public IActionResult Index()
         {
+            
             var objects = _context.Objects
                           .Include(o => o.Machines)
                           .OrderByDescending(o => o.Id)
@@ -31,31 +33,30 @@ namespace CoffeeTechnik.Controllers
         public IActionResult Create()
         {
             ViewData["Types"] = GetObjectTypes();
-
             return View();
         }
 
-       
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(ObjectEntity model)// Обработка на създаването на нов обект
+        public IActionResult Create(ObjectEntity model)
         {
             if (!ModelState.IsValid)
             {
                 ViewData["Types"] = GetObjectTypes();
-
                 return View(model);
             }
 
             _context.Objects.Add(model);
             _context.SaveChanges();
 
-            return RedirectToAction("Index");
+            TempData["Success"] = "Обектът беше добавен успешно.";
+            return RedirectToAction(nameof(Index));
         }
 
         
         [HttpGet]
-        public IActionResult Edit(int id) // Страница за редактиране на обект
+        public IActionResult Edit(int id)
         {
             var obj = _context.Objects.FirstOrDefault(o => o.Id == id);
             if (obj == null)
@@ -68,12 +69,11 @@ namespace CoffeeTechnik.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(ObjectEntity model)// Обработка на редактирането на обект
+        public IActionResult Edit(ObjectEntity model)
         {
             if (!ModelState.IsValid)
             {
                 ViewData["Types"] = GetObjectTypes();
-
                 return View(model);
             }
 
@@ -81,22 +81,47 @@ namespace CoffeeTechnik.Controllers
             if (obj == null)
                 return NotFound();
 
-            
             obj.Name = model.Name;
             obj.Firma = model.Firma;
             obj.Bulstat = model.Bulstat;
             obj.Type = model.Type;
             obj.Address = model.Address;
+            obj.City = model.City;
             obj.PhoneNumber = model.PhoneNumber;
             obj.ContactPerson = model.ContactPerson;
 
             _context.SaveChanges();
 
-            return RedirectToAction("Index");
+            TempData["Success"] = "Обектът беше редактиран успешно.";
+            return RedirectToAction(nameof(Index));
         }
 
         
-        public IActionResult Demontage() // Страница за демонтаж
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            var obj = _context.Objects.Include(o => o.Machines)
+                                      .FirstOrDefault(o => o.Id == id);
+
+            if (obj == null)
+                return NotFound();
+
+            if (obj.Machines != null && obj.Machines.Any())
+            {
+                TempData["Error"] = "Обектът не може да бъде изтрит, защото има свързани машини.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            _context.Objects.Remove(obj);
+            _context.SaveChanges();
+
+            TempData["Success"] = "Обектът беше успешно изтрит.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        
+        public IActionResult Demontage()
         {
             var demontageObjects = _context.Objects
                                            .Where(o => !o.Machines.Any())
@@ -105,35 +130,8 @@ namespace CoffeeTechnik.Controllers
             return View(demontageObjects);
         }
 
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
-        {
-            var obj = _context.Objects.Include(o => o.Machines)
-                .FirstOrDefault(o => o.Id == id);
-
-            if (obj == null)
-                return NotFound();
-
-            if (obj.Machines != null && obj.Machines.Any())
-            {
-                TempData["Error"] = "Обектът не може да бъде изтрит, защото има свързани машини.";
-
-                return RedirectToAction(nameof(Index));
-            }
-
-            _context.Objects.Remove(obj);
-
-            _context.SaveChanges();
-
-            TempData["Success"] = "Обектът беше успешно изтрит.";
-
-            return RedirectToAction(nameof(Index));
-        }
-
-
-        private List<SelectListItem> GetObjectTypes() 
+        
+        private List<SelectListItem> GetObjectTypes()
         {
             return new List<SelectListItem>
             {
