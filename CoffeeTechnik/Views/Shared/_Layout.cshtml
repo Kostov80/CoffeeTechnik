@@ -21,7 +21,7 @@
 </head>
 <body>
 
-    @* Скриваме navbar при Login и Register *@
+    
     @if (!(currentController == "Account" && (currentAction == "Login" || currentAction == "Register")))
     {
         <header>
@@ -58,7 +58,7 @@
                                     <a class="nav-link text-white" asp-controller="Objects" asp-action="Index">Обекти</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-controller="Coffee" asp-action="Index">Машини</a>
+                                    <a class="nav-link text-white" asp-controller="CoffeeMachines" asp-action="Index">Машини</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-white" asp-controller="Reports" asp-action="Index">Справки</a>
@@ -71,10 +71,10 @@
                                     <a class="nav-link text-white" asp-controller="Objects" asp-action="Index">Обекти</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-controller="Coffee" asp-action="Index">Машини</a>
+                                    <a class="nav-link text-white" asp-controller="CoffeeMachines" asp-action="Index">Машини</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-controller="Service" asp-action="Index">Сервизна дейност</a>
+                                    <a class="nav-link text-white" asp-controller="ServiceRequest" asp-action="Index">Сервизна дейност</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-white" asp-controller="Warehouse" asp-action="Index">Склад</a>
@@ -100,11 +100,7 @@
                             Роля: @role
                         </span>
 
-                        <a class="btn btn-outline-danger"
-                           asp-controller="Account"
-                           asp-action="Logout">
-                            Изход
-                        </a>
+                        <a class="btn btn-outline-danger" asp-controller="Account" asp-action="Logout">Изход</a>
 
                     </div>
                 </div>
@@ -114,7 +110,7 @@
 
     <div class="container">
 
-        @* СЪОБЩЕНИЕ ЗА УСПЕХ *@
+        
         @if (TempData["SuccessMessage"] != null)
         {
             <div class="alert alert-success text-center mt-3">
