@@ -3,7 +3,9 @@ using CoffeeTechnik.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CoffeeTechnik.Controllers
 {
@@ -16,19 +18,17 @@ namespace CoffeeTechnik.Controllers
             _context = context;
         }
 
-        
-        public IActionResult Index()
+        // GET: Objects
+        public async Task<IActionResult> Index()
         {
-            
-            var objects = _context.Objects
-                          .Include(o => o.Machines)
-                          .OrderByDescending(o => o.Id)
-                          .ToList();
-
+            var objects = await _context.Objects
+                                        .Include(o => o.Machines)
+                                        .OrderByDescending(o => o.Id)
+                                        .ToListAsync();
             return View(objects);
         }
 
-        
+        // GET: Objects/Create
         [HttpGet]
         public IActionResult Create()
         {
@@ -36,10 +36,10 @@ namespace CoffeeTechnik.Controllers
             return View();
         }
 
-        
+        // POST: Objects/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(ObjectEntity model)
+        public async Task<IActionResult> Create([Bind("Name,Firma,Bulstat,Type,Address,City,PhoneNumber,ContactPerson")] ObjectEntity model)
         {
             if (!ModelState.IsValid)
             {
@@ -48,17 +48,17 @@ namespace CoffeeTechnik.Controllers
             }
 
             _context.Objects.Add(model);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             TempData["Success"] = "Обектът беше добавен успешно.";
             return RedirectToAction(nameof(Index));
         }
 
-        
+        // GET: Objects/Edit/5
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var obj = _context.Objects.FirstOrDefault(o => o.Id == id);
+            var obj = await _context.Objects.FindAsync(id);
             if (obj == null)
                 return NotFound();
 
@@ -66,10 +66,10 @@ namespace CoffeeTechnik.Controllers
             return View(obj);
         }
 
-        
+        // POST: Objects/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(ObjectEntity model)
+        public async Task<IActionResult> Edit([Bind("Id,Name,Firma,Bulstat,Type,Address,City,PhoneNumber,ContactPerson")] ObjectEntity model)
         {
             if (!ModelState.IsValid)
             {
@@ -77,7 +77,7 @@ namespace CoffeeTechnik.Controllers
                 return View(model);
             }
 
-            var obj = _context.Objects.FirstOrDefault(o => o.Id == model.Id);
+            var obj = await _context.Objects.FindAsync(model.Id);
             if (obj == null)
                 return NotFound();
 
@@ -90,19 +90,19 @@ namespace CoffeeTechnik.Controllers
             obj.PhoneNumber = model.PhoneNumber;
             obj.ContactPerson = model.ContactPerson;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             TempData["Success"] = "Обектът беше редактиран успешно.";
             return RedirectToAction(nameof(Index));
         }
 
-        
+        // POST: Objects/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var obj = _context.Objects.Include(o => o.Machines)
-                                      .FirstOrDefault(o => o.Id == id);
+            var obj = await _context.Objects.Include(o => o.Machines)
+                                            .FirstOrDefaultAsync(o => o.Id == id);
 
             if (obj == null)
                 return NotFound();
@@ -114,23 +114,21 @@ namespace CoffeeTechnik.Controllers
             }
 
             _context.Objects.Remove(obj);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             TempData["Success"] = "Обектът беше успешно изтрит.";
             return RedirectToAction(nameof(Index));
         }
 
         
-        public IActionResult Demontage()
+        public async Task<IActionResult> Demontage()
         {
-            var demontageObjects = _context.Objects
-                                           .Where(o => !o.Machines.Any())
-                                           .ToList();
-
+            var demontageObjects = await _context.Objects
+                                                 .Where(o => !o.Machines.Any())
+                                                 .ToListAsync();
             return View(demontageObjects);
         }
 
-        
         private List<SelectListItem> GetObjectTypes()
         {
             return new List<SelectListItem>

@@ -4,50 +4,63 @@
     ViewData["Title"] = "Демонтаж на обекти";
 }
 
-<h2>Демонтаж на обекти</h2>
+<h2>@ViewData["Title"]</h2>
 
 @if (TempData["Error"] != null)
 {
-    <div class="alert alert-danger">@TempData["Error"]</div>
+    <div class="alert alert-danger mt-2">@TempData["Error"]</div>
 }
 
 @if (TempData["Success"] != null)
 {
-    <div class="alert alert-success">@TempData["Success"]</div>
+    <div class="alert alert-success mt-2">@TempData["Success"]</div>
 }
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Име</th>
-            <th>Фирма</th>
-            <th>Булстат</th>
-            <th>Адрес</th>
-            <th>Телефон</th>
-            <th>Контактно лице</th>
-            <th>Действие</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var obj in Model)
-        {
+@if (Model != null && Model.Any())
+{
+    <table class="table table-striped table-hover mt-3">
+        <thead class="table-dark">
             <tr>
-                <td>@obj.Name</td>
-                <td>@obj.Firma</td>
-                <td>@obj.Bulstat</td>
-                <td>@obj.Address</td>
-                <td>@obj.PhoneNumber</td>
-                <td>@obj.ContactPerson</td>
-                <td>
-                    <form asp-action="Delete" method="post">
-                        <input type="hidden" name="id" value="@obj.Id" />
-                        <button type="submit" class="btn btn-danger btn-sm">Изтрий</button>
-                    </form>
-                </td>
+                <th>Име</th>
+                <th>Фирма</th>
+                <th>Булстат</th>
+                <th>Адрес</th>
+                <th>Телефон</th>
+                <th>Контактно лице</th>
+                <th>Действие</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var obj in Model)
+            {
+                <tr>
+                    <td>@obj.Name</td>
+                    <td>@obj.Firma</td>
+                    <td>@obj.Bulstat</td>
+                    <td>@obj.Address</td>
+                    <td>@obj.PhoneNumber</td>
+                    <td>@obj.ContactPerson</td>
+                    <td>
+                        <form asp-action="Delete" method="post" style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@obj.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Сигурни ли сте, че искате да изтриете този обект?');">
+                                Изтрий
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info mt-3">
+        Няма обекти за демонтаж.
+    </div>
+}
 
 <div class="d-flex justify-content-between mt-3">
     <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Назад</a>
