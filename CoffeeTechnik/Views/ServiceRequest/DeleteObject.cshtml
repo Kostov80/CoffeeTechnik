@@ -1,4 +1,5 @@
-﻿@model CoffeeTechnik.Models.DeleteObjectViewModel
+﻿@using CoffeeTechnik.ViewModels
+@model DeleteObjectViewModel
 
 @{
     ViewData["Title"] = "Изтрий обект";
@@ -25,8 +26,9 @@
         @Html.AntiForgeryToken()
 
         <div class="mb-3">
-            <label class="form-label">Име на обекта</label>
+            <label asp-for="Name" class="form-label"></label>
             <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
         </div>
 
         <button type="submit" class="btn btn-danger">
@@ -34,7 +36,11 @@
         </button>
     </form>
 
-    <a asp-action="Index" class="btn btn-secondary mt-3">
+    <a asp-action="Index" asp-controller="ServiceRequest" class="btn btn-secondary mt-3">
         Назад
     </a>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

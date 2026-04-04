@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using CoffeeTechnik.Models;
+﻿using CoffeeTechnik.Models;
+using CoffeeTechnik.ViewModels; 
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -52,7 +53,6 @@ namespace CoffeeTechnik.Controllers
                 return View(model);
             }
 
-            
             HttpContext.Session.SetString("UserRole", user.Role);
 
             return RedirectToAction("Index", "Home");
@@ -73,16 +73,11 @@ namespace CoffeeTechnik.Controllers
             if (_users.Any(u => u.Username == model.Username))
             {
                 ModelState.AddModelError("Username", "Това потребителско име вече съществува");
-
                 return View(model);
             }
 
             _users.Add(model);
-
-            
             TempData["SuccessMessage"] = "Регистрацията е успешна!";
-
-            
             HttpContext.Session.SetString("UserRole", model.Role);
 
             return RedirectToAction("Index", "Home");
@@ -92,16 +87,13 @@ namespace CoffeeTechnik.Controllers
         public IActionResult GuestLogin()
         {
             HttpContext.Session.SetString("UserRole", "Guest");
-
             return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
         public IActionResult Logout()
         {
-            
             HttpContext.Session.Clear();
-
             return RedirectToAction("Login", "Account");
         }
     }

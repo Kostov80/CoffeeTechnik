@@ -5,7 +5,7 @@ namespace CoffeeTechnik.Models
 {
     public class ServiceRequest
     {
-        public int Id 
+        public int Id
         { get; set; }
 
 
@@ -38,9 +38,9 @@ namespace CoffeeTechnik.Models
         { get; set; } = "Нова";
 
 
-        
+
         [Display(Name = "Машина")]
-        public int MachineId 
+        public int MachineId
         { get; set; }
 
 
@@ -48,7 +48,7 @@ namespace CoffeeTechnik.Models
         public Machine Machine
         { get; set; } = null!;
 
-        public DateTime CreatedAt 
+        public DateTime CreatedAt
         { get; internal set; }
 
         public string? MontajOpisanie
@@ -58,17 +58,17 @@ namespace CoffeeTechnik.Models
         { get; set; }
 
 
-        public string? ProfilaktikaOpisanie 
+        public string? ProfilaktikaOpisanie
         { get; set; }
 
-        public DateTime? ProfilaktikaDate 
+        public DateTime? ProfilaktikaDate
         { get; set; }
 
 
-        public string? AvariaOpisanie 
+        public string? AvariaOpisanie
         { get; set; }
 
-        public DateTime? AvariaDate 
+        public DateTime? AvariaDate
         { get; set; }
 
     }

@@ -8,7 +8,7 @@
         <h4 class="text-center">Нова заявка</h4>
     </div>
 
-    <!-- Бутоните за различните типове заявки -->
+    
     <div class="d-flex flex-column align-items-center gap-3 mb-5">
         <a asp-controller="ServiceRequest" asp-action="CreateMontage" class="btn btn-outline-primary btn-lg w-50">
             Монтаж
@@ -26,7 +26,7 @@
 
 </div>
 
-<!-- Фиксиран бутон "Виж заявки" долу вдясно -->
+
 <a class="btn btn-info"
    asp-action="Index"
    asp-controller="ServiceRequest"
@@ -34,12 +34,9 @@
     Виж заявки
 </a>
 
-<!-- Фиксиран бутон "Назад" долу вляво -->
+
 <a asp-controller="Home" asp-action="Index" class="btn btn-secondary"
    style="position: fixed; bottom: 20px; left: 20px; z-index: 1000;">
     ← Назад
 </a>
 
-<!-- Забележка: След като избереш тип на заявката (например Монтаж),
-     ще се зареди отделна форма, където ще избираш машина от dropdown.
-     Това премахва нуждата от ръчно попълване на обект или машина тук. -->

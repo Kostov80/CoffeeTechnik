@@ -1,4 +1,5 @@
-﻿@model CoffeeTechnik.Models.MontageViewModel
+﻿@using CoffeeTechnik.ViewModels
+@model MontageViewModel
 
 @{
     ViewData["Title"] = "Заявка за Монтаж";
@@ -7,11 +8,7 @@
 <h2 class="mb-4">Заявка за Монтаж</h2>
 
 <form asp-action="CreateMontage" method="post">
-
-
     @Html.AntiForgeryToken()
-
-
 
     <div class="mb-3">
         <label asp-for="ObjectName" class="form-label">Име на обекта</label>
@@ -26,7 +23,6 @@
     </div>
 
     <div class="mb-3">
-
         <label asp-for="City" class="form-label">Град</label>
         <input asp-for="City" class="form-control" />
         <span asp-validation-for="City" class="text-danger"></span>
@@ -50,8 +46,6 @@
         <span asp-validation-for="Phone" class="text-danger"></span>
     </div>
 
-
-
     <div class="mb-3">
         <label asp-for="MachineModel" class="form-label">Модел на машината</label>
         <input asp-for="MachineModel" class="form-control" />
@@ -64,7 +58,6 @@
         <span asp-validation-for="MachineConnection" class="text-danger"></span>
     </div>
 
-  
     <div class="mb-3">
         <label asp-for="Location" class="form-label">Локация</label>
         <input asp-for="Location" class="form-control" />
@@ -77,9 +70,7 @@
         <span asp-validation-for="Requester" class="text-danger"></span>
     </div>
 
-
     <button type="submit" class="btn btn-primary">Запази заявката</button>
-
 </form>
 
 @section Scripts {
