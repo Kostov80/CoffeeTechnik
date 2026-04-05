@@ -1,11 +1,12 @@
 ﻿@model IEnumerable<CoffeeTechnik.Models.ServiceRequest>
 
 @{
-    ViewData["Title"] = "Всички заявки";
+    ViewData["Title"] = "Сервизна дейност";
+    var role = Context.Session.GetString("UserRole") ?? "Guest";
 }
 
 <div class="container mt-4">
-    <h2 class="text-center mb-4">Всички заявки</h2>
+    <h2 class="text-center mb-4">Сервизна дейност</h2>
 
     @if (TempData["SuccessMessage"] != null)
     {
@@ -21,17 +22,13 @@
         </div>
     }
 
-    <!-- Dropdown за филтриране -->
+    
     <div class="d-flex justify-content-center mb-3">
         <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle"
-                    type="button"
-                    id="filterMenuButton"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="filterMenuButton"
+                    data-bs-toggle="dropdown" aria-expanded="false">
                 Филтрирай по тип
             </button>
-
             <ul class="dropdown-menu" aria-labelledby="filterMenuButton">
                 <li><a class="dropdown-item" asp-action="Index" asp-route-requestType="">Всички</a></li>
                 <li><a class="dropdown-item" asp-action="Index" asp-route-requestType="Монтаж">Монтаж</a></li>
@@ -42,7 +39,7 @@
         </div>
     </div>
 
-    <!-- Таблица със заявки -->
+    
     <table class="table table-bordered table-striped table-hover">
         <thead class="table-dark">
             <tr>
@@ -68,10 +65,8 @@
                         <td>@item.Description</td>
                         <td>@item.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
                         <td class="d-flex gap-2">
-                            <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
                             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Редактирай</a>
-
                             <form asp-action="Delete" method="post" onsubmit="return confirm('Сигурни ли сте, че искате да изтриете заявката?');">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="id" value="@item.Id" />
@@ -91,63 +86,22 @@
     </table>
 </div>
 
-<!-- Постоянен бутон "Назад" долу вляво -->
-<a asp-controller="Home" asp-action="Index" class="btn shadow"
-   style="position: fixed; bottom: 20px; left: 20px; z-index:2000; background-color: #6c757d; color:white; border:none; width:120px;">
-    ← Назад
-</a>
 
-
-
-<!-- Контейнер за бутоните "Нова заявка" и "Изтрий обект" -->
-<div style="position: fixed; bottom: 20px; right: 20px; z-index:2000; display:flex; gap:10px;">
-
-    <a asp-controller="ServiceRequest" asp-action="Create" class="btn shadow"
-       style="background-color: #0d6efd; color:white; border:none; width:150px;">
-        Нова заявка
+@if (role == "Sales" || role == "Technician")
+{
+    <a asp-controller="Home" asp-action="Index" class="btn shadow"
+       style="position: fixed; bottom: 20px; left: 20px; z-index:2000; background-color: #6c757d; color:white; border:none; width:120px;">
+        ← Назад
     </a>
 
-   
-</div>
-</div>
+    <div style="position: fixed; bottom: 20px; right: 20px; z-index:2000; display:flex; gap:10px;">
+        <a asp-controller="ServiceRequest" asp-action="CreateMontage" class="btn shadow"
+           style="background-color: #0d6efd; color:white; border:none; width:150px;">
+            Нова заявка
+        </a>
+    </div>
+}
 
 @section Scripts {
-    <script>
-        const btnDelete = document.getElementById('btnDeleteObject');
-
-        const deleteDiv = document.getElementById('deleteObjectDiv');
-
-        const confirmBtn = document.getElementById('confirmDelete');
-
-        btnDelete.addEventListener('click', () =>
-        {
-            deleteDiv.style.display = deleteDiv.style.display === 'none' ? 'block' : 'none';
-        });
-
-        confirmBtn.addEventListener('click', () =>
-        {
-            const objName = document.getElementById('objectToDelete').value;
-            if (!objName)
-            {
-                alert('Моля, въведете име на обекта!');
-                return;
-            }
-
-            fetch('/ServiceRequest/DeleteObject', {
-                method: 'POST',
-                headers:
-                {
-                    'Content-Type': 'application/json',
-                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                },
-                body: JSON.stringify({ name: objName })
-            })
-            .then(res => res.json())
-            .then(data => 
-            {
-                alert(data.message);
-                if(data.success) location.reload();
-            });
-        });
-    </script>
+    <partial name="_ValidationScriptsPartial" />
 }

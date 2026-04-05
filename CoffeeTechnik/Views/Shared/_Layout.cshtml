@@ -2,7 +2,6 @@
 
 @{
     var role = Context.Session.GetString("UserRole") ?? "Guest";
-
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
 }
@@ -21,7 +20,7 @@
 </head>
 <body>
 
-    
+   
     @if (!(currentController == "Account" && (currentAction == "Login" || currentAction == "Register")))
     {
         <header>
@@ -52,7 +51,7 @@
                             @if (role == "Sales")
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-controller="ServiceRequest" asp-action="Create">Нова заявка</a>
+                                    <a class="nav-link text-white" asp-controller="ServiceRequest" asp-action="CreateMontage">Нова заявка</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-white" asp-controller="Objects" asp-action="Index">Обекти</a>
@@ -118,6 +117,13 @@
             </div>
         }
 
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger text-center mt-3">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -133,6 +139,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
+    
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>
