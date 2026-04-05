@@ -15,7 +15,7 @@ namespace CoffeeTechnik.Controllers
             _context = context;
         }
 
-        #region Index
+        #region Index & Details
         [HttpGet]
         public IActionResult Index(string requestType)
         {
@@ -51,37 +51,24 @@ namespace CoffeeTechnik.Controllers
         [HttpGet]
         public IActionResult CreateMontage()
         {
-            ViewData["PageTitle"] = "Заявка за Монтаж";
-            if (TempData["SuccessMessage"] != null)
-                ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
-
             return View(new MontageViewModel());
         }
 
         [HttpGet]
         public IActionResult CreateDemontage()
         {
-            ViewData["PageTitle"] = "Заявка за Демонтаж";
-            ViewBag.Objects = _context.Objects.ToList();
-            ViewBag.Machines = _context.Machines.ToList();
             return View();
         }
 
         [HttpGet]
         public IActionResult CreateEmergency()
         {
-            ViewData["PageTitle"] = "Заявка за Авария";
-            ViewBag.Objects = _context.Objects.ToList();
-            ViewBag.Machines = _context.Machines.ToList();
             return View();
         }
 
         [HttpGet]
         public IActionResult CreateMaintenance()
         {
-            ViewData["PageTitle"] = "Заявка за Профилактика";
-            ViewBag.Objects = _context.Objects.ToList();
-            ViewBag.Machines = _context.Machines.ToList();
             return View();
         }
         #endregion
@@ -132,17 +119,17 @@ namespace CoffeeTechnik.Controllers
             _context.ServiceRequests.Add(request);
             _context.SaveChanges();
 
-            TempData["SuccessMessage"] = "Заявката за монтаж е запаметена успешно!";
-            return RedirectToAction(nameof(CreateMontage));
+            TempData["SuccessMessage"] = "Заявката за монтаж е запазена успешно!";
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateDemontage(string objectName, string requester, string reason, string technician, string note)
+        public IActionResult CreateDemontage(string objectName, string requester, string reason)
         {
-            if (string.IsNullOrEmpty(objectName) || string.IsNullOrEmpty(requester))
+            if (string.IsNullOrEmpty(objectName) || string.IsNullOrEmpty(requester) || string.IsNullOrEmpty(reason))
             {
-                TempData["ErrorMessage"] = "Моля, попълнете задължителните полета!";
+                TempData["ErrorMessage"] = "Моля, попълнете всички задължителни полета!";
                 return RedirectToAction(nameof(CreateDemontage));
             }
 
@@ -163,7 +150,7 @@ namespace CoffeeTechnik.Controllers
             _context.SaveChanges();
 
             var machine = _context.Machines.FirstOrDefault(m => m.ObjectEntityId == obj.Id)
-                ?? new Machine { Model = "Неизвестен модел", ObjectEntityId = obj.Id, SerialNumber = note ?? "N/A" };
+                ?? new Machine { Model = "Неизвестен модел", ObjectEntityId = obj.Id, SerialNumber = "N/A" };
 
             if (machine.Id == 0) _context.Machines.Add(machine);
             _context.SaveChanges();
@@ -180,17 +167,17 @@ namespace CoffeeTechnik.Controllers
             _context.ServiceRequests.Add(request);
             _context.SaveChanges();
 
-            TempData["SuccessMessage"] = "Заявката за демонтаж е запаметена успешно!";
-            return RedirectToAction(nameof(CreateDemontage));
+            TempData["SuccessMessage"] = "Заявката за демонтаж е запазена успешно!";
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateEmergency(string objectName, string emergencyDetails)
+        public IActionResult CreateEmergency(string objectName, string requester, string details)
         {
-            if (string.IsNullOrEmpty(objectName) || string.IsNullOrEmpty(emergencyDetails))
+            if (string.IsNullOrEmpty(objectName) || string.IsNullOrEmpty(requester) || string.IsNullOrEmpty(details))
             {
-                TempData["ErrorMessage"] = "Моля, попълнете задължителните полета!";
+                TempData["ErrorMessage"] = "Моля, попълнете всички задължителни полета!";
                 return RedirectToAction(nameof(CreateEmergency));
             }
 
@@ -220,25 +207,25 @@ namespace CoffeeTechnik.Controllers
             {
                 RequestType = "Авария",
                 MachineId = machine.Id,
-                Description = $"Авария на обект {obj.Name}. Детайли: {emergencyDetails}",
+                Description = $"Авария на обект {obj.Name}. Детайли: {details}",
                 CreatedAt = DateTime.Now,
-                Requester = "N/A"
+                Requester = requester
             };
 
             _context.ServiceRequests.Add(request);
             _context.SaveChanges();
 
-            TempData["SuccessMessage"] = "Заявката за авария е запаметена успешно!";
-            return RedirectToAction(nameof(CreateEmergency));
+            TempData["SuccessMessage"] = "Заявката за авария е запазена успешно!";
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateMaintenance(string objectName, string requestFrom)
+        public IActionResult CreateMaintenance(string objectName, string requester, string details)
         {
-            if (string.IsNullOrEmpty(objectName) || string.IsNullOrEmpty(requestFrom))
+            if (string.IsNullOrEmpty(objectName) || string.IsNullOrEmpty(requester) || string.IsNullOrEmpty(details))
             {
-                TempData["ErrorMessage"] = "Моля, попълнете задължителните полета!";
+                TempData["ErrorMessage"] = "Моля, попълнете всички задължителни полета!";
                 return RedirectToAction(nameof(CreateMaintenance));
             }
 
@@ -268,16 +255,16 @@ namespace CoffeeTechnik.Controllers
             {
                 RequestType = "Профилактика",
                 MachineId = machine.Id,
-                Description = $"Профилактика на обект {obj.Name}. От: {requestFrom}",
+                Description = $"Профилактика на обект {obj.Name}. Детайли: {details}",
                 CreatedAt = DateTime.Now,
-                Requester = requestFrom
+                Requester = requester
             };
 
             _context.ServiceRequests.Add(request);
             _context.SaveChanges();
 
-            TempData["SuccessMessage"] = "Заявката за профилактика е запаметена успешно!";
-            return RedirectToAction(nameof(CreateMaintenance));
+            TempData["SuccessMessage"] = "Заявката за профилактика е запазена успешно!";
+            return RedirectToAction(nameof(Index));
         }
         #endregion
 
