@@ -17,8 +17,7 @@ namespace CoffeeTechnik.Controllers
         {
             _context = context;
         }
-
-        // GET: Objects
+                
         public async Task<IActionResult> Index()
         {
             var objects = await _context.Objects
@@ -28,7 +27,7 @@ namespace CoffeeTechnik.Controllers
             return View(objects);
         }
 
-        // GET: Objects/Create
+        
         [HttpGet]
         public IActionResult Create()
         {
@@ -36,7 +35,7 @@ namespace CoffeeTechnik.Controllers
             return View();
         }
 
-        // POST: Objects/Create
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name,Firma,Bulstat,Type,Address,City,PhoneNumber,ContactPerson")] ObjectEntity model)
@@ -54,7 +53,7 @@ namespace CoffeeTechnik.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Objects/Edit/5
+        
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -66,7 +65,7 @@ namespace CoffeeTechnik.Controllers
             return View(obj);
         }
 
-        // POST: Objects/Edit
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("Id,Name,Firma,Bulstat,Type,Address,City,PhoneNumber,ContactPerson")] ObjectEntity model)
@@ -96,7 +95,7 @@ namespace CoffeeTechnik.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: Objects/Delete/5
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)

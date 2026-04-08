@@ -28,9 +28,11 @@
                 <label asp-for="Role" class="form-label"></label>
                 <select asp-for="Role" class="form-select">
                     <option value="">-- Избери роля --</option>
+                    <option value="Admin">Администратор</option> 
                     <option value="Technician">Техник</option>
                     <option value="Sales">Търговски представител</option>
                 </select>
+                            
                 <span asp-validation-for="Role" class="text-danger"></span>
             </div>
 

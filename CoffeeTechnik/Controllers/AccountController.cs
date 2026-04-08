@@ -1,5 +1,5 @@
 ﻿using CoffeeTechnik.Models;
-using CoffeeTechnik.ViewModels; 
+using CoffeeTechnik.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,9 +27,19 @@ namespace CoffeeTechnik.Controllers
                 Username = "sales",
                 Password = "1234",
                 Role = "Sales"
+            },
+            new RegisterViewModel
+            {
+                FirstName = "Admin",
+                LastName = "Admin",
+                PhoneNumber = "0000000000",
+                Username = "admin",
+                Password = "1234",
+                Role = "Admin"
             }
         };
 
+     
         [HttpGet]
         public IActionResult Login()
         {
@@ -53,11 +63,13 @@ namespace CoffeeTechnik.Controllers
                 return View(model);
             }
 
+            
             HttpContext.Session.SetString("UserRole", user.Role);
 
             return RedirectToAction("Index", "Home");
         }
 
+     
         [HttpGet]
         public IActionResult Register()
         {
@@ -77,19 +89,22 @@ namespace CoffeeTechnik.Controllers
             }
 
             _users.Add(model);
+
             TempData["SuccessMessage"] = "Регистрацията е успешна!";
+
+            
             HttpContext.Session.SetString("UserRole", model.Role);
 
             return RedirectToAction("Index", "Home");
         }
-
+                
         [HttpGet]
         public IActionResult GuestLogin()
         {
             HttpContext.Session.SetString("UserRole", "Guest");
             return RedirectToAction("Index", "Home");
         }
-
+                
         [HttpGet]
         public IActionResult Logout()
         {
