@@ -27,14 +27,16 @@ builder.Services.AddScoped<ICoffeeService, CoffeeService>();
 
 var app = builder.Build();
 
-
+//app.UseExceptionHandler("/Home/Error500");
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
 }
 else
 {
-    app.UseExceptionHandler("/Home/Error");
+
+    app.UseExceptionHandler("/Home/Error500");
+    app.UseStatusCodePagesWithReExecute("/Home/StatusCode", "?code={0}");
     app.UseHsts();
 }
 
