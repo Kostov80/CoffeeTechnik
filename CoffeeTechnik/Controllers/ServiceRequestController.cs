@@ -17,24 +17,37 @@ namespace CoffeeTechnik.Controllers
 
         #region Index & Details
         [HttpGet]
-        public IActionResult Index(string requestType, int page = 1)
+        public IActionResult Index(string requestType, string searchString, int page = 1)
         {
             int pageSize = 5;
 
             var query = _context.ServiceRequests
-                .Include(r => r.Machine)
+                .Include(s => s.Machine)
                 .ThenInclude(m => m.ObjectEntity)
-                .OrderByDescending(r => r.CreatedAt)
                 .AsQueryable();
 
+            
             if (!string.IsNullOrEmpty(requestType))
             {
-                query = query.Where(r => r.RequestType == requestType);
+                query = query.Where(s => s.RequestType == requestType);
+            }
+
+            
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(s =>
+                    s.Description.Contains(searchString) ||
+                    s.RequestType.Contains(searchString) ||
+                    s.Machine.Model.Contains(searchString) ||
+                    s.Machine.ObjectEntity.Name.Contains(searchString) ||
+                    s.Machine.ObjectEntity.City.Contains(searchString)
+                );
             }
 
             int totalItems = query.Count();
 
-            var requests = query
+            var items = query
+                .OrderByDescending(s => s.CreatedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
@@ -42,8 +55,9 @@ namespace CoffeeTechnik.Controllers
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
             ViewBag.CurrentFilter = requestType;
+            ViewBag.SearchString = searchString;
 
-            return View(requests);
+            return View(items);
         }
 
         [HttpGet]

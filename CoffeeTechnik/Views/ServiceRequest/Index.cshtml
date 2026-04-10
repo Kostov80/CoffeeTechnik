@@ -7,6 +7,7 @@
     int currentPage = ViewBag.CurrentPage ?? 1;
     int totalPages = ViewBag.TotalPages ?? 1;
     string currentFilter = ViewBag.CurrentFilter as string;
+    string searchString = ViewBag.SearchString as string;
 }
 
 <div class="container mt-4">
@@ -25,6 +26,26 @@
             @TempData["ErrorMessage"]
         </div>
     }
+        
+    <form method="get" class="d-flex justify-content-center mb-3 gap-2 flex-wrap">
+
+        <input type="text"
+               name="searchString"
+               value="@searchString"
+               class="form-control w-25"
+               placeholder="Търси..." />
+
+        <input type="hidden" name="requestType" value="@currentFilter" />
+
+        <button type="submit" class="btn btn-primary">
+            Търси
+        </button>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            Изчисти
+        </a>
+
+    </form>
 
     <div class="d-flex justify-content-center mb-3 gap-3 flex-wrap">
 
@@ -101,7 +122,7 @@
             else
             {
                 <tr>
-                    <td colspan="7" class="text-center">Няма въведени заявки.</td>
+                    <td colspan="7" class="text-center">Няма резултати.</td>
                 </tr>
             }
         </tbody>
@@ -117,7 +138,8 @@
                         <a class="page-link"
                            asp-action="Index"
                            asp-route-page="@(currentPage - 1)"
-                           asp-route-requestType="@currentFilter">
+                           asp-route-requestType="@currentFilter"
+                           asp-route-searchString="@searchString">
                             Предишна
                         </a>
                     </li>
@@ -129,7 +151,8 @@
                         <a class="page-link"
                            asp-action="Index"
                            asp-route-page="@i"
-                           asp-route-requestType="@currentFilter">
+                           asp-route-requestType="@currentFilter"
+                           asp-route-searchString="@searchString">
                             @i
                         </a>
                     </li>
@@ -141,7 +164,8 @@
                         <a class="page-link"
                            asp-action="Index"
                            asp-route-page="@(currentPage + 1)"
-                           asp-route-requestType="@currentFilter">
+                           asp-route-requestType="@currentFilter"
+                           asp-route-searchString="@searchString">
                             Следваща
                         </a>
                     </li>
@@ -157,7 +181,7 @@
     <a asp-controller="Home" asp-action="Index"
        class="btn shadow"
        style="position: fixed; bottom: 20px; left: 20px; z-index:2000;
-                  background-color: #6c757d; color:white; width:120px;">
+                      background-color: #6c757d; color:white; width:120px;">
         ← Назад
     </a>
 }
