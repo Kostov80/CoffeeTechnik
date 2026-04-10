@@ -17,9 +17,11 @@ namespace CoffeeTechnik.Controllers
 
         #region Index & Details
         [HttpGet]
-        public IActionResult Index(string requestType)
+        public IActionResult Index(string requestType, int page = 1)
         {
-            var requests = _context.ServiceRequests
+            int pageSize = 5;
+
+            var query = _context.ServiceRequests
                 .Include(r => r.Machine)
                 .ThenInclude(m => m.ObjectEntity)
                 .OrderByDescending(r => r.CreatedAt)
@@ -27,10 +29,21 @@ namespace CoffeeTechnik.Controllers
 
             if (!string.IsNullOrEmpty(requestType))
             {
-                requests = requests.Where(r => r.RequestType == requestType);
+                query = query.Where(r => r.RequestType == requestType);
             }
 
-            return View(requests.ToList());
+            int totalItems = query.Count();
+
+            var requests = query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            ViewBag.CurrentFilter = requestType;
+
+            return View(requests);
         }
 
         [HttpGet]

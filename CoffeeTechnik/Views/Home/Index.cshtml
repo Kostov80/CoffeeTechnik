@@ -1,9 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Начало";
 
-    string role = TempData["UserRole"] as string ?? "Guest";
-
-    TempData.Keep("UserRole");
+    string role = Context.Session.GetString("UserRole") ?? "Guest";
 }
 
 <div class="container mt-4">
@@ -12,8 +10,9 @@
 
     <div class="row g-4 text-center">
 
+        <!-- НОВА ЗАЯВКА (FIXED) -->
         <div class="col-6 col-md-4">
-            <a asp-controller="ServiceRequest" asp-action="Create" class="text-decoration-none">
+            <a asp-controller="ServiceRequest" asp-action="Index" class="text-decoration-none">
                 <div class="card p-4 shadow-sm h-100">
                     <div class="display-4">➕</div>
                     <h5 class="mt-3 text-dark">Нова заявка</h5>
@@ -40,7 +39,7 @@
         </div>
 
         <div class="col-6 col-md-4">
-            <a asp-controller="ServiceActivity" asp-action="Index" class="text-decoration-none">
+            <a asp-controller="ServiceRequest" asp-action="Index" class="text-decoration-none">
                 <div class="card p-4 shadow-sm h-100">
                     <div class="display-4">🛠</div>
                     <h5 class="mt-3 text-dark">Сервизна дейност</h5>
