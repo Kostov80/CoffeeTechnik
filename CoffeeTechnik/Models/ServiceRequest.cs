@@ -1,75 +1,81 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CoffeeTechnik.Models
 {
     public class ServiceRequest
     {
-        public int Id
-        { get; set; }
+        public int Id { get; set; }
 
-
-        [Required]
+      
+        [Required(ErrorMessage = "Типът на заявката е задължителен")]
+        [StringLength(50)]
         [Display(Name = "Тип заявка")]
         public string RequestType
         { get; set; } = null!;
 
-
-        [Required]
+        [Required(ErrorMessage = "Подателят е задължителен")]
+        [StringLength(100)]
         [Display(Name = "Подал заявката")]
-        public string Requester
+        public string Requester 
         { get; set; } = null!;
 
-
-        [Required]
+        [Required(ErrorMessage = "Описанието е задължително")]
+        [StringLength(500, MinimumLength = 5,
+            ErrorMessage = "Описанието трябва да е между 5 и 500 символа")]
         [Display(Name = "Описание")]
-        [StringLength(500, ErrorMessage = "Описанието може да бъде до 500 символа.")]
         public string Description
         { get; set; } = null!;
-
 
         [Display(Name = "Дата на създаване")]
         public DateTime CreatedOn
         { get; set; } = DateTime.Now;
 
-
+        [Required]
         [Display(Name = "Статус")]
-        public string Status
-        { get; set; } = "Нова";
+        [StringLength(50)]
+        public string Status { get; set; } = "Нова";
 
 
-
+        [Required(ErrorMessage = "Избери машина")]
         [Display(Name = "Машина")]
-        public int MachineId
+        public int MachineId 
         { get; set; }
-
 
         [ForeignKey("MachineId")]
-        public Machine Machine
+        public Machine Machine 
         { get; set; } = null!;
 
-        public DateTime CreatedAt
-        { get; internal set; }
-
-        public string? MontajOpisanie
+        
+        [StringLength(500)]
+        [Display(Name = "Описание монтаж")]
+        public string? MontajOpisanie 
         { get; set; }
 
-        public DateTime? MontajDate
+        [DataType(DataType.Date)]
+        [Display(Name = "Дата монтаж")]
+        public DateTime? MontajDate 
         { get; set; }
 
-
-        public string? ProfilaktikaOpisanie
+        [StringLength(500)]
+        [Display(Name = "Описание профилактика")]
+        public string? ProfilaktikaOpisanie 
         { get; set; }
 
-        public DateTime? ProfilaktikaDate
+        [DataType(DataType.Date)]
+        [Display(Name = "Дата профилактика")]
+        public DateTime? ProfilaktikaDate 
+        { get; set; }
+                
+        [StringLength(500)]
+        [Display(Name = "Описание авария")]
+        public string? AvariaOpisanie 
         { get; set; }
 
-
-        public string? AvariaOpisanie
+        [DataType(DataType.Date)]
+        [Display(Name = "Дата авария")]
+        public DateTime? AvariaDate 
         { get; set; }
-
-        public DateTime? AvariaDate
-        { get; set; }
-
     }
 }

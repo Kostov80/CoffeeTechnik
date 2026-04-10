@@ -14,8 +14,7 @@ namespace CoffeeTechnik.Controllers
         {
             _context = context;
         }
-
-        #region Index & Details
+               
         [HttpGet]
         public IActionResult Index(string requestType, string searchString, int page = 1)
         {
@@ -26,28 +25,28 @@ namespace CoffeeTechnik.Controllers
                 .ThenInclude(m => m.ObjectEntity)
                 .AsQueryable();
 
-            
-            if (!string.IsNullOrEmpty(requestType))
+            if (!string.IsNullOrWhiteSpace(requestType))
             {
                 query = query.Where(s => s.RequestType == requestType);
             }
 
-            
-            if (!string.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrWhiteSpace(searchString))
             {
                 query = query.Where(s =>
                     s.Description.Contains(searchString) ||
                     s.RequestType.Contains(searchString) ||
-                    s.Machine.Model.Contains(searchString) ||
-                    s.Machine.ObjectEntity.Name.Contains(searchString) ||
-                    s.Machine.ObjectEntity.City.Contains(searchString)
+                    (s.Machine != null && s.Machine.Model.Contains(searchString)) ||
+                    (s.Machine != null && s.Machine.ObjectEntity != null &&
+                     s.Machine.ObjectEntity.Name.Contains(searchString)) ||
+                    (s.Machine != null && s.Machine.ObjectEntity != null &&
+                     s.Machine.ObjectEntity.City.Contains(searchString))
                 );
             }
 
             int totalItems = query.Count();
 
             var items = query
-                .OrderByDescending(s => s.CreatedAt)
+                .OrderByDescending(s => s.CreatedOn)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
@@ -59,8 +58,7 @@ namespace CoffeeTechnik.Controllers
 
             return View(items);
         }
-
-        [HttpGet]
+               
         public IActionResult Details(int id)
         {
             var request = _context.ServiceRequests
@@ -68,47 +66,31 @@ namespace CoffeeTechnik.Controllers
                 .ThenInclude(m => m.ObjectEntity)
                 .FirstOrDefault(r => r.Id == id);
 
-            if (request == null) return NotFound();
+            if (request == null)
+                return NotFound();
 
             return View(request);
         }
-        #endregion
 
-        #region Create GET
-        [HttpGet]
-        public IActionResult CreateMontage()
-        {
-            return View(new MontageViewModel());
-        }
+       
+        public IActionResult CreateMontage() => View(new MontageViewModel());
+        public IActionResult CreateDemontage() => View();
+        public IActionResult CreateEmergency() => View();
+        public IActionResult CreateMaintenance() => View();
 
-        [HttpGet]
-        public IActionResult CreateDemontage()
-        {
-            return View();
-        }
-
-        [HttpGet]
-        public IActionResult CreateEmergency()
-        {
-            return View();
-        }
-
-        [HttpGet]
-        public IActionResult CreateMaintenance()
-        {
-            return View();
-        }
-        #endregion
-
-        #region Create POST
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CreateMontage(MontageViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid)
+                return View(model);
 
-            var obj = _context.Objects.FirstOrDefault(o => o.Name == model.ObjectName)
-                ?? new ObjectEntity
+            var obj = _context.Objects.FirstOrDefault(o => o.Name == model.ObjectName);
+
+            if (obj == null)
+            {
+                obj = new ObjectEntity
                 {
                     Name = model.ObjectName,
                     Bulstat = model.BULSTAT,
@@ -120,33 +102,39 @@ namespace CoffeeTechnik.Controllers
                     Firma = "Неизвестна"
                 };
 
-            if (obj.Id == 0) _context.Objects.Add(obj);
-            _context.SaveChanges();
+                _context.Objects.Add(obj);
+                _context.SaveChanges();
+            }
 
-            var machine = _context.Machines.FirstOrDefault(m => m.Model == model.MachineModel && m.ObjectEntityId == obj.Id)
-                ?? new Machine
+            var machine = _context.Machines.FirstOrDefault(m =>
+                m.Model == model.MachineModel &&
+                m.ObjectEntityId == obj.Id);
+
+            if (machine == null)
+            {
+                machine = new Machine
                 {
                     Model = model.MachineModel,
                     SerialNumber = model.MachineConnection,
                     ObjectEntityId = obj.Id
                 };
 
-            if (machine.Id == 0) _context.Machines.Add(machine);
-            _context.SaveChanges();
+                _context.Machines.Add(machine);
+                _context.SaveChanges();
+            }
 
-            var request = new ServiceRequest
+            _context.ServiceRequests.Add(new ServiceRequest
             {
                 RequestType = "Монтаж",
                 MachineId = machine.Id,
-                Description = $"Монтаж на машина {machine.Model} на обект {obj.Name}",
-                CreatedAt = DateTime.Now,
+                Description = $"Монтаж на {machine.Model} за {obj.Name}",
+                CreatedOn = DateTime.Now,
                 Requester = model.Requester
-            };
+            });
 
-            _context.ServiceRequests.Add(request);
             _context.SaveChanges();
 
-            TempData["SuccessMessage"] = "Заявката за монтаж е запазена успешно!";
+            TempData["SuccessMessage"] = "Заявката за монтаж е създадена!";
             return RedirectToAction(nameof(Index));
         }
 
@@ -154,47 +142,50 @@ namespace CoffeeTechnik.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult CreateDemontage(string objectName, string requester, string reason)
         {
-            if (string.IsNullOrEmpty(objectName) || string.IsNullOrEmpty(requester) || string.IsNullOrEmpty(reason))
+            if (string.IsNullOrWhiteSpace(objectName) ||
+                string.IsNullOrWhiteSpace(requester) ||
+                string.IsNullOrWhiteSpace(reason))
             {
-                TempData["ErrorMessage"] = "Моля, попълнете всички задължителни полета!";
+                TempData["ErrorMessage"] = "Попълни всички полета!";
                 return RedirectToAction(nameof(CreateDemontage));
             }
 
-            var obj = _context.Objects.FirstOrDefault(o => o.Name == objectName)
-                ?? new ObjectEntity
-                {
-                    Name = objectName,
-                    Type = "Демонтаж",
-                    Bulstat = "N/A",
-                    City = "N/A",
-                    Address = "N/A",
-                    ContactPerson = "N/A",
-                    PhoneNumber = "N/A",
-                    Firma = "Неизвестна"
-                };
+            var obj = new ObjectEntity
+            {
+                Name = objectName,
+                Type = "Демонтаж",
+                Bulstat = "N/A",
+                City = "N/A",
+                Address = "N/A",
+                ContactPerson = "N/A",
+                PhoneNumber = "N/A",
+                Firma = "Неизвестна"
+            };
 
-            if (obj.Id == 0) _context.Objects.Add(obj);
+            _context.Objects.Add(obj);
             _context.SaveChanges();
 
-            var machine = _context.Machines.FirstOrDefault(m => m.ObjectEntityId == obj.Id)
-                ?? new Machine { Model = "Неизвестен модел", ObjectEntityId = obj.Id, SerialNumber = "N/A" };
+            var machine = new Machine
+            {
+                Model = "N/A",
+                SerialNumber = "N/A",
+                ObjectEntityId = obj.Id
+            };
 
-            if (machine.Id == 0) _context.Machines.Add(machine);
+            _context.Machines.Add(machine);
             _context.SaveChanges();
 
-            var request = new ServiceRequest
+            _context.ServiceRequests.Add(new ServiceRequest
             {
                 RequestType = "Демонтаж",
                 MachineId = machine.Id,
-                Description = $"Демонтаж на обект {obj.Name}. Причина: {reason}",
-                CreatedAt = DateTime.Now,
+                Description = reason,
+                CreatedOn = DateTime.Now,
                 Requester = requester
-            };
+            });
 
-            _context.ServiceRequests.Add(request);
             _context.SaveChanges();
 
-            TempData["SuccessMessage"] = "Заявката за демонтаж е запазена успешно!";
             return RedirectToAction(nameof(Index));
         }
 
@@ -202,47 +193,50 @@ namespace CoffeeTechnik.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult CreateEmergency(string objectName, string requester, string details)
         {
-            if (string.IsNullOrEmpty(objectName) || string.IsNullOrEmpty(requester) || string.IsNullOrEmpty(details))
+            if (string.IsNullOrWhiteSpace(objectName) ||
+                string.IsNullOrWhiteSpace(requester) ||
+                string.IsNullOrWhiteSpace(details))
             {
-                TempData["ErrorMessage"] = "Моля, попълнете всички задължителни полета!";
+                TempData["ErrorMessage"] = "Попълни всички полета!";
                 return RedirectToAction(nameof(CreateEmergency));
             }
 
-            var obj = _context.Objects.FirstOrDefault(o => o.Name == objectName)
-                ?? new ObjectEntity
-                {
-                    Name = objectName,
-                    Type = "Авария",
-                    Bulstat = "N/A",
-                    City = "N/A",
-                    Address = "N/A",
-                    ContactPerson = "N/A",
-                    PhoneNumber = "N/A",
-                    Firma = "Неизвестна"
-                };
+            var obj = new ObjectEntity
+            {
+                Name = objectName,
+                Type = "Авария",
+                Bulstat = "N/A",
+                City = "N/A",
+                Address = "N/A",
+                ContactPerson = "N/A",
+                PhoneNumber = "N/A",
+                Firma = "Неизвестна"
+            };
 
-            if (obj.Id == 0) _context.Objects.Add(obj);
+            _context.Objects.Add(obj);
             _context.SaveChanges();
 
-            var machine = _context.Machines.FirstOrDefault(m => m.ObjectEntityId == obj.Id)
-                ?? new Machine { Model = "Неизвестен модел", ObjectEntityId = obj.Id, SerialNumber = "N/A" };
+            var machine = new Machine
+            {
+                Model = "N/A",
+                SerialNumber = "N/A",
+                ObjectEntityId = obj.Id
+            };
 
-            if (machine.Id == 0) _context.Machines.Add(machine);
+            _context.Machines.Add(machine);
             _context.SaveChanges();
 
-            var request = new ServiceRequest
+            _context.ServiceRequests.Add(new ServiceRequest
             {
                 RequestType = "Авария",
                 MachineId = machine.Id,
-                Description = $"Авария на обект {obj.Name}. Детайли: {details}",
-                CreatedAt = DateTime.Now,
+                Description = details,
+                CreatedOn = DateTime.Now,
                 Requester = requester
-            };
+            });
 
-            _context.ServiceRequests.Add(request);
             _context.SaveChanges();
 
-            TempData["SuccessMessage"] = "Заявката за авария е запазена успешно!";
             return RedirectToAction(nameof(Index));
         }
 
@@ -250,105 +244,51 @@ namespace CoffeeTechnik.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult CreateMaintenance(string objectName, string requester, string details)
         {
-            if (string.IsNullOrEmpty(objectName) || string.IsNullOrEmpty(requester) || string.IsNullOrEmpty(details))
+            if (string.IsNullOrWhiteSpace(objectName) ||
+                string.IsNullOrWhiteSpace(requester) ||
+                string.IsNullOrWhiteSpace(details))
             {
-                TempData["ErrorMessage"] = "Моля, попълнете всички задължителни полета!";
+                TempData["ErrorMessage"] = "Попълни всички полета!";
                 return RedirectToAction(nameof(CreateMaintenance));
             }
 
-            var obj = _context.Objects.FirstOrDefault(o => o.Name == objectName)
-                ?? new ObjectEntity
-                {
-                    Name = objectName,
-                    Type = "Профилактика",
-                    Bulstat = "N/A",
-                    City = "N/A",
-                    Address = "N/A",
-                    ContactPerson = "N/A",
-                    PhoneNumber = "N/A",
-                    Firma = "Неизвестна"
-                };
+            var obj = new ObjectEntity
+            {
+                Name = objectName,
+                Type = "Профилактика",
+                Bulstat = "N/A",
+                City = "N/A",
+                Address = "N/A",
+                ContactPerson = "N/A",
+                PhoneNumber = "N/A",
+                Firma = "Неизвестна"
+            };
 
-            if (obj.Id == 0) _context.Objects.Add(obj);
+            _context.Objects.Add(obj);
             _context.SaveChanges();
 
-            var machine = _context.Machines.FirstOrDefault(m => m.ObjectEntityId == obj.Id)
-                ?? new Machine { Model = "Неизвестен модел", ObjectEntityId = obj.Id, SerialNumber = "N/A" };
+            var machine = new Machine
+            {
+                Model = "N/A",
+                SerialNumber = "N/A",
+                ObjectEntityId = obj.Id
+            };
 
-            if (machine.Id == 0) _context.Machines.Add(machine);
+            _context.Machines.Add(machine);
             _context.SaveChanges();
 
-            var request = new ServiceRequest
+            _context.ServiceRequests.Add(new ServiceRequest
             {
                 RequestType = "Профилактика",
                 MachineId = machine.Id,
-                Description = $"Профилактика на обект {obj.Name}. Детайли: {details}",
-                CreatedAt = DateTime.Now,
+                Description = details,
+                CreatedOn = DateTime.Now,
                 Requester = requester
-            };
-
-            _context.ServiceRequests.Add(request);
-            _context.SaveChanges();
-
-            TempData["SuccessMessage"] = "Заявката за профилактика е запазена успешно!";
-            return RedirectToAction(nameof(Index));
-        }
-        #endregion
-
-        #region Edit & Delete
-        [HttpGet]
-        public IActionResult Edit(int id)
-        {
-            var request = _context.ServiceRequests.Find(id);
-            if (request == null) return NotFound();
-
-            var model = new EditServiceRequestViewModel
-            {
-                Id = request.Id,
-                Description = request.Description,
-                RequestType = request.RequestType,
-                Requester = request.Requester
-            };
-
-            return View(model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(EditServiceRequestViewModel model)
-        {
-            if (!ModelState.IsValid) return View(model);
-
-            var request = _context.ServiceRequests.Find(model.Id);
-            if (request == null) return NotFound();
-
-            request.Description = model.Description;
-            request.RequestType = model.RequestType;
-            request.Requester = model.Requester;
+            });
 
             _context.SaveChanges();
 
-            TempData["SuccessMessage"] = "Заявката беше редактирана успешно!";
             return RedirectToAction(nameof(Index));
         }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
-        {
-            var request = _context.ServiceRequests.Find(id);
-            if (request == null)
-            {
-                TempData["ErrorMessage"] = "Заявката не беше намерена!";
-                return RedirectToAction(nameof(Index));
-            }
-
-            _context.ServiceRequests.Remove(request);
-            _context.SaveChanges();
-
-            TempData["SuccessMessage"] = "Заявката беше изтрита успешно!";
-            return RedirectToAction(nameof(Index));
-        }
-        #endregion
     }
 }
