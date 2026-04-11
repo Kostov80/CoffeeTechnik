@@ -19,7 +19,10 @@ namespace CoffeeTechnik.Data
 
         public DbSet<CoffeeMachine> CoffeeMachines { get; set; } = null!;
 
-        
+        public DbSet<ServiceStatus> ServiceStatuses { get; set; }
+                
         public DbSet<InventoryItem> InventoryItems { get; set; } = null!;
     }
+
+
 }

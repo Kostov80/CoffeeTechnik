@@ -47,7 +47,11 @@ namespace CoffeeTechnik.Models
         public Machine Machine 
         { get; set; } = null!;
 
-        
+        public int? ServiceStatusId 
+        { get; set; }
+        public ServiceStatus? ServiceStatus
+        { get; set; }
+
         [StringLength(500)]
         [Display(Name = "Описание монтаж")]
         public string? MontajOpisanie 
