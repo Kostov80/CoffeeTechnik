@@ -1,5 +1,6 @@
 ﻿using CoffeeTechnik.Data;
 using CoffeeTechnik.Services;
+using CoffeeTechnik.Services.Implementations;
 using CoffeeTechnik.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,9 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddSession();
+
 builder.Services.AddScoped<ICoffeeService, CoffeeService>();
+builder.Services.AddScoped<IServiceRequestService, ServiceRequestService>();
 
 var app = builder.Build();
 
