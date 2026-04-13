@@ -25,7 +25,8 @@ namespace CoffeeTechnik.Controllers
 
             return View(result.Items);
         }
-               
+
+        
         [HttpGet]
         public IActionResult Details(int id)
         {
@@ -37,7 +38,7 @@ namespace CoffeeTechnik.Controllers
             return View(request);
         }
 
-        
+                
         [HttpGet]
         public IActionResult CreateMontage() => View(new MontageViewModel());
 
@@ -50,7 +51,7 @@ namespace CoffeeTechnik.Controllers
         [HttpGet]
         public IActionResult CreateMaintenance() => View();
 
-      
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CreateMontage(MontageViewModel model)
@@ -81,7 +82,7 @@ namespace CoffeeTechnik.Controllers
             TempData["SuccessMessage"] = "Демонтаж заявка създадена!";
             return RedirectToAction(nameof(Index));
         }
-                
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CreateEmergency(string objectName, string requester, string details)

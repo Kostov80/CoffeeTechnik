@@ -38,11 +38,13 @@ namespace CoffeeTechnik.Controllers
                 Role = "Admin"
             }
         };
-
-     
+                
         [HttpGet]
         public IActionResult Login()
         {
+            if (HttpContext.Session.GetString("UserRole") != null)
+                return RedirectToAction("Index", "Home");
+
             return View();
         }
 
@@ -63,13 +65,11 @@ namespace CoffeeTechnik.Controllers
                 return View(model);
             }
 
-            
             HttpContext.Session.SetString("UserRole", user.Role);
 
             return RedirectToAction("Index", "Home");
         }
-
-     
+                
         [HttpGet]
         public IActionResult Register()
         {
@@ -90,26 +90,23 @@ namespace CoffeeTechnik.Controllers
 
             _users.Add(model);
 
-            TempData["SuccessMessage"] = "Регистрацията е успешна!";
-
-            
             HttpContext.Session.SetString("UserRole", model.Role);
+
+            TempData["SuccessMessage"] = "Регистрацията е успешна!";
 
             return RedirectToAction("Index", "Home");
         }
                 
-        [HttpGet]
         public IActionResult GuestLogin()
         {
             HttpContext.Session.SetString("UserRole", "Guest");
             return RedirectToAction("Index", "Home");
         }
                 
-        [HttpGet]
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Login");
         }
     }
 }
