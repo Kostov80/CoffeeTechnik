@@ -1,4 +1,6 @@
-﻿@{
+﻿@model CoffeeTechnik.ViewModels.MaintenanceViewModel
+
+@{
     ViewData["Title"] = "Профилактика";
 }
 
@@ -12,13 +14,14 @@
     <form asp-action="CreateMaintenance"
           asp-controller="ServiceRequest"
           method="post">
-                  
+
         <div class="mb-3">
             <label class="form-label">Обект</label>
             <div class="d-flex gap-2">
                 <input class="form-control"
-                       name="objectName"
+                       asp-for="ObjectName"
                        required />
+                <span asp-validation-for="ObjectName" class="text-danger"></span>
 
                 <button type="button"
                         class="btn btn-outline-info"
@@ -28,22 +31,23 @@
                 </button>
             </div>
         </div>
-                
+
         <div class="mb-3">
             <label class="form-label">Подал заявката</label>
             <select class="form-select"
-                    name="requestFrom"
+                    asp-for="RequestFrom"
                     required>
                 <option value="">-- избери --</option>
                 <option value="Търговец">Търговец</option>
                 <option value="Клиент">Клиент</option>
                 <option value="Техник">Техник</option>
             </select>
+            <span asp-validation-for="RequestFrom" class="text-danger"></span>
         </div>
-                
+
         <div class="d-flex justify-content-between mt-4">
             <a asp-controller="ServiceRequest"
-               asp-action="Create"
+               asp-action="Index"
                class="btn btn-outline-secondary">
                 ← Назад
             </a>
@@ -52,7 +56,7 @@
                 Запази
             </button>
         </div>
-                
+
         <div class="modal fade" id="infoModal" tabindex="-1">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -90,3 +94,7 @@
 
     </form>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

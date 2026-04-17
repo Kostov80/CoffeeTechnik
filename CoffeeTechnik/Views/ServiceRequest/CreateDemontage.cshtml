@@ -10,8 +10,8 @@
     </div>
 
     <form asp-action="CreateDemontage" asp-controller="ServiceRequest" method="post">
-        
-        
+
+
 
         <div class="mb-3">
             <label class="form-label">Име на обекта</label>
@@ -26,17 +26,17 @@
                 </button>
             </div>
         </div>
-                
+
         <div class="mb-3">
             <label class="form-label">Подал заявката</label>
             <input class="form-control" name="requester" required />
         </div>
-                
+
         <div class="mb-3">
             <label class="form-label">Причина за демонтаж</label>
             <textarea class="form-control" name="reason" rows="3" required></textarea>
         </div>
-                
+
         <div class="d-flex justify-content-between mt-4">
             <a asp-controller="ServiceRequest"
                asp-action="Create"
@@ -48,7 +48,7 @@
                 Запази
             </button>
         </div>
-                
+
         <div class="modal fade" id="infoModal" tabindex="-1">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -84,3 +84,7 @@
 
     </form>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

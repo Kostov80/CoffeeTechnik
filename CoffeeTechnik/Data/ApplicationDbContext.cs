@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using CoffeeTechnik.Models;
-using CoffeeTechnik.Data.Entities; 
 
 namespace CoffeeTechnik.Data
 {
@@ -10,18 +9,20 @@ namespace CoffeeTechnik.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-
         }
 
-        public DbSet<ObjectEntity> Objects
-        { get; set; } = null!;
-        public DbSet<Machine> Machines 
-        { get; set; } = null!;
-        public DbSet<ServiceRequest> ServiceRequests 
-        { get; set; } = null!;
+        public DbSet<ObjectEntity> Objects { get; set; } = null!;
 
-        // DbSet за CoffeeMachines
-        public DbSet<CoffeeMachineEntity> Coffees 
-        { get; set; } = null!;
+        public DbSet<Machine> Machines { get; set; } = null!;
+
+        public DbSet<ServiceRequest> ServiceRequests { get; set; } = null!;
+
+        public DbSet<CoffeeMachine> CoffeeMachines { get; set; } = null!;
+
+        public DbSet<ServiceStatus> ServiceStatuses { get; set; }
+                
+        public DbSet<InventoryItem> InventoryItems { get; set; } = null!;
     }
+
+
 }

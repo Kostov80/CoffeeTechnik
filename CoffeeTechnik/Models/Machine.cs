@@ -44,9 +44,8 @@ namespace CoffeeTechnik.Models
         [ForeignKey(nameof(ObjectEntityId))]
         public ObjectEntity ObjectEntity
         { get; set; } = null!;
-
-
-        // Една машина има много заявки
-        public ICollection<ServiceRequest> ServiceRequests { get; set; } = new List<ServiceRequest>();
+                        
+        public ICollection<ServiceRequest> ServiceRequests 
+        { get; set; } = new List<ServiceRequest>();
     }
 }
