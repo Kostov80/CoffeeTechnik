@@ -1,0 +1,27 @@
+﻿@model CoffeeTechnik.Models.InventoryItem
+
+<h2>Редактирай част</h2>
+
+<form asp-action="EditPart" method="post">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label>Име</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Бройка</label>
+        <input asp-for="Quantity" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Описание</label>
+        <input asp-for="Description" class="form-control" />
+    </div>
+
+    <button class="btn btn-success">Запази</button>
+    <a asp-action="Parts" class="btn btn-secondary">Отказ</a>
+</form>

@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Управление на потребители";
+}
+
+<h2 class="text-center mb-4">Потребители</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success text-center">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger text-center">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Email</th>
+            <th>Роля</th>
+            <th>Действие</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            var roles = await UserManager.GetRolesAsync(user);
+
+            <tr>
+                <td>@user.Email</td>
+
+                <td>
+                    @if (roles.Any())
+                    {
+                        @string.Join(", ", roles)
+                    }
+                    else
+                    {
+                        <span class="text-muted">Няма роля</span>
+                    }
+                </td>
+
+                <td>
+                    <form asp-action="AssignRole" method="post" class="d-flex gap-2">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="userId" value="@user.Id" />
+
+                        <select name="role" class="form-select">
+                            <option value="">-- избери роля --</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Technician">Technician</option>
+                            <option value="Sales">Sales</option>
+                        </select>
+
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            Запази
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

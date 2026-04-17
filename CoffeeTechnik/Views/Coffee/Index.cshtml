@@ -1,0 +1,41 @@
+﻿@model IEnumerable<CoffeeTechnik.Models.ViewModels.CoffeeMachineViewModel>
+
+@{
+    ViewData["Title"] = "Машини";
+}
+
+<h2>Машини</h2>
+
+<div class="mb-3">
+    <a class="btn btn-success" asp-action="Create">Добави нова машина</a>
+</div>
+
+<table class="table table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Модел</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var coffee in Model)
+            {
+                <tr>
+                    <td>@coffee.Model</td> 
+                    <td>
+                        <a class="btn btn-sm btn-primary me-1" asp-action="Edit" asp-route-id="@coffee.Id">Редактирай</a>
+                        <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@coffee.Id">Изтрий</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="2" class="text-center">Няма налични машини</td>
+            </tr>
+        }
+    </tbody>
+</table>

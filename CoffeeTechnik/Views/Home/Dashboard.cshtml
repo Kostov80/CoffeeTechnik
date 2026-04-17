@@ -1,0 +1,88 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    var role = TempData["UserRole"]?.ToString() ?? "Guest";
+    TempData.Keep("UserRole");
+}
+
+<h2 class="mb-4">Dashboard</h2>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+
+    
+    @if (role == "Sales" || role == "Technician")
+    {
+        <div class="col">
+            <div class="card text-center h-100 shadow-sm">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <a class="btn btn-outline-primary btn-lg mb-2" asp-controller="Coffee" asp-action="Index" title="Машини">
+                        <i class="bi bi-cup-fill" style="font-size:2rem;"></i>
+                    </a>
+                    <h5 class="card-title">Машини</h5>
+                    <p class="card-text">Виж всички кафемашини</p>
+                </div>
+            </div>
+        </div>
+    }
+
+    
+    @if (role != "Guest")
+    {
+        <div class="col">
+            <div class="card text-center h-100 shadow-sm">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <a class="btn btn-outline-success btn-lg mb-2" asp-controller="Objects" asp-action="Index" title="Обекти">
+                        <i class="bi bi-building" style="font-size:2rem;"></i>
+                    </a>
+                    <h5 class="card-title">Обекти</h5>
+                    <p class="card-text">Виж всички обекти</p>
+                </div>
+            </div>
+        </div>
+    }
+
+    
+    @if (role == "Sales")
+    {
+        <div class="col">
+            <div class="card text-center h-100 shadow-sm">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <a class="btn btn-outline-info btn-lg mb-2" asp-controller="ServiceRequest" asp-action="Create" title="Нова заявка">
+                        <i class="bi bi-pencil-square" style="font-size:2rem;"></i>
+                    </a>
+                    <h5 class="card-title">Нова заявка</h5>
+                    <p class="card-text">Създай нова сервизна заявка</p>
+                </div>
+            </div>
+        </div>
+    }
+
+    
+    @if (role == "Technician")
+    {
+        <div class="col">
+            <div class="card text-center h-100 shadow-sm">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <a class="btn btn-outline-warning btn-lg mb-2" asp-controller="Service" asp-action="Index" title="Сервизна дейност">
+                        <i class="bi bi-tools" style="font-size:2rem;"></i>
+                    </a>
+                    <h5 class="card-title">Сервизна дейност</h5>
+                    <p class="card-text">Преглед и обработка на заявки</p>
+                </div>
+            </div>
+        </div>
+    }
+
+    
+    <div class="col">
+        <div class="card text-center h-100 shadow-sm">
+            <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                <a class="btn btn-outline-secondary btn-lg mb-2" asp-controller="Reports" asp-action="Index" title="Справки">
+                    <i class="bi bi-file-earmark-text" style="font-size:2rem;"></i>
+                </a>
+                <h5 class="card-title">Справки</h5>
+                <p class="card-text">Виж всички отчети</p>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,43 @@
+﻿@model CoffeeTechnik.Models.ViewModels.CoffeeMachineViewModel
+
+@{
+    ViewData["Title"] = "Редактирай машина";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Edit" method="post">
+
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="Model" class="form-label">Модел</label>
+        <input asp-for="Model" class="form-control" />
+        <span asp-validation-for="Model" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SerialNumber" class="form-label">Сериен номер</label>
+        <input asp-for="SerialNumber" class="form-control" />
+        <span asp-validation-for="SerialNumber" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="InstallationDate" class="form-label">Дата на инсталация</label>
+        <input asp-for="InstallationDate" type="date" class="form-control" />
+        <span asp-validation-for="InstallationDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ObjectEntityId" class="form-label">Обект (ID)</label>
+        <input asp-for="ObjectEntityId" type="number" class="form-control" />
+        <span asp-validation-for="ObjectEntityId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Запази</button>
+    <a asp-action="Index" class="btn btn-secondary">Отказ</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

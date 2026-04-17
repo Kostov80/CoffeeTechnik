@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "Склад";
+}
+
+<div class="container mt-4">
+
+    <h2 class="text-center mb-4">Склад</h2>
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-4">
+            <div class="card text-center shadow p-3 mb-4">
+                <h4>Машини</h4>
+                <p>Преглед и управление на всички машини</p>
+
+                <a asp-controller="CoffeeMachines" asp-action="Index" class="btn btn-primary">
+                    Виж машини
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-center shadow p-3 mb-4">
+                <h4>Части</h4>
+                <p>Налични части и количества</p>
+
+                <a asp-controller="Warehouse" asp-action="Parts" class="btn btn-success">
+                    Виж части
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>

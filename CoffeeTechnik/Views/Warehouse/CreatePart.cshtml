@@ -1,0 +1,34 @@
+﻿@model CoffeeTechnik.Models.InventoryItem
+
+@{
+    ViewData["Title"] = "Добави част";
+}
+
+<div class="container mt-4">
+
+    <h2>Добави част</h2>
+
+    <form asp-action="CreatePart" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="form-group mb-3">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Quantity"></label>
+            <input asp-for="Quantity" class="form-control" />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-success">Запази</button>
+        <a asp-action="Parts" class="btn btn-secondary">Отказ</a>
+    </form>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

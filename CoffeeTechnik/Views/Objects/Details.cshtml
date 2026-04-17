@@ -1,0 +1,18 @@
+﻿@model CoffeeTechnik.Models.ObjectEntity
+
+<h2>Object Details</h2>
+
+<div class="card p-3">
+    <p><b>Name:</b> @Model.Name</p>
+    <p><b>Company:</b> @Model.Firma</p>
+    <p><b>Bulstat:</b> @Model.Bulstat</p>
+    <p><b>Type:</b> @Model.Type</p>
+    <p><b>City:</b> @Model.City</p>
+    <p><b>Address:</b> @Model.Address</p>
+    <p><b>Phone:</b> @Model.PhoneNumber</p>
+    <p><b>Contact:</b> @Model.ContactPerson</p>
+</div>
+
+<br />
+
+<a asp-action="Index" class="btn btn-primary">Back</a>
