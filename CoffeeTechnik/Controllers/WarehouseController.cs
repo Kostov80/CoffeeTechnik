@@ -2,6 +2,7 @@
 using CoffeeTechnik.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CoffeeTechnik.Controllers
@@ -14,24 +15,31 @@ namespace CoffeeTechnik.Controllers
         {
             _context = context;
         }
-                
+
         public IActionResult Index()
         {
             return View();
         }
-                
-        public async Task<IActionResult> Parts()
+
+        
+        public async Task<IActionResult> Parts(string searchString)
         {
-            var parts = await _context.InventoryItems.ToListAsync();
-            return View(parts);
+            var parts = _context.InventoryItems.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                parts = parts.Where(p => p.Name.Contains(searchString));
+            }
+
+            return View(await parts.ToListAsync());
         }
-                
+
         [HttpGet]
         public IActionResult CreatePart()
         {
             return View();
         }
-                
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePart(InventoryItem model)
@@ -44,7 +52,7 @@ namespace CoffeeTechnik.Controllers
 
             return RedirectToAction(nameof(Parts));
         }
-                
+
         [HttpGet]
         public async Task<IActionResult> EditPart(int id)
         {
@@ -55,7 +63,7 @@ namespace CoffeeTechnik.Controllers
 
             return View(item);
         }
-                
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPart(InventoryItem model)
@@ -76,7 +84,7 @@ namespace CoffeeTechnik.Controllers
 
             return RedirectToAction(nameof(Parts));
         }
-                
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeletePart(int id)
