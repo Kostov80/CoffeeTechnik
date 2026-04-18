@@ -1,0 +1,30 @@
+﻿@model CoffeeTechnik.Models.ViewModels.CoffeeMachineViewModel
+
+@{
+    ViewData["Title"] = "Детайли за машина";
+}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">Детайли за машина</h2>
+
+    <div class="card shadow p-4">
+
+        <p><strong>Модел:</strong> @Model.Model</p>
+
+        <p><strong>Сериен номер:</strong> @Model.SerialNumber</p>
+
+        <p>
+            <strong>Дата на инсталация:</strong>
+            @Model.InstallationDate?.ToString("dd.MM.yyyy")
+        </p>
+
+        <p><strong>Обект ID:</strong> @Model.ObjectEntityId</p>
+
+    </div>
+
+    <a asp-action="Index" class="btn btn-secondary mt-3">
+        Назад
+    </a>
+
+</div>
